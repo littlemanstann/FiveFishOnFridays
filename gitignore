@@ -1,8 +1,0 @@
-# Ignore everything except the src directory and README.md
-*
-!src/
-!src/**/*
-!bin/
-!bin/data/
-!bin/data/**/*
-!README.md
