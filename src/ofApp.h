@@ -63,4 +63,6 @@ public:
 	float size = 1.0f;
 	const float MAX_SIZE = 2.0f;
 	const float MIN_SIZE = 0.5f;
+
+	ofLight myLight;
 };

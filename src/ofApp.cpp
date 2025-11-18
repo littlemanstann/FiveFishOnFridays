@@ -2,8 +2,12 @@
 
 //--------------------------------------------------------------
 void ofApp::setup() {
-	ofBackground(0, 0, 0);
-	ofEnableDepthTest();
+	ofSetWindowTitle("Final Project - Five Fish On Fridays - 3501");
+	ofBackground(0);
+	ofSetFrameRate(60); // caps the framerate at 60FPS
+
+	ofSetSphereResolution(50);
+
 	ofTrueTypeFont::setGlobalDpi(72);
 
 	ofDisableArbTex();
@@ -22,6 +26,13 @@ void ofApp::setup() {
 	
 	cone.set(1, 3);
 	
+	ofEnableSmoothing();
+	ofSetGlobalAmbientColor(ofColor(155, 155, 155));
+	ofSetSmoothLighting(true); //no documentation
+	ofSetSphereResolution(100);
+	ofEnableLighting(); // use lighting calculations
+	myLight.setPointLight(); // it is a point light
+
 
 	calibri.load("calibri.ttf", 32, true, true);
 	calibri.setLineHeight(18.0f);
@@ -73,6 +84,10 @@ void ofApp::setup() {
 
 //--------------------------------------------------------------
 void ofApp::update() {
+	float dayTime = 3;
+	myLight.setGlobalPosition(sin(ofGetElapsedTimef() / dayTime) * 1000, 1000, cos(ofGetElapsedTimef() / dayTime) * 1000); // where it is
+
+
 	cam.update(SIXTY_FPS, size); // 60 fps
 	if (health == 0) {
 		enemies.clear();
@@ -215,6 +230,10 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 	cam.begin();
+	myLight.enable();
+	
+	ofEnableDepthTest();
+
 
 	ofSetColor(255);
 	for (int i = 0; i < asteroids; i++)
@@ -246,15 +265,16 @@ void ofApp::draw() {
 	cone.rotateDeg(90, cam.getqSide());
 
 
-	// Draw Player Collision Sphere (Yansen Implementation) (For debugging) (drive beside the collidable object then turn to see if cone will collide with it)
-	//ofDrawSphere(cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3), PLAYER_RADIUS);
-	
-	ofSetColor(0, 0, 255, 255);
 	cone.draw();
 
+		// Draw Player Collision Sphere (Yansen Implementation) (For debugging) (drive beside the collidable object then turn to see if cone will collide with it)
+	//ofDrawSphere(cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3), PLAYER_RADIUS);
+	
+	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space
+	myLight.disable();
 	cam.end();
 
-	// Crosshairs (Yansen Inplementation)
+	//// Crosshairs (Yansen Inplementation)
 	float sx = ofGetWidth() / 2.0f;
 	float sy = ofGetHeight() / 2.0f;
 
@@ -265,7 +285,7 @@ void ofApp::draw() {
 	w = 2;
 	h = 15;
 
-	//Speed and Health UI
+	////Speed and Health UI
 	ofSetColor(0, 255, 0, 255);
 	calibri.drawString(("Health: " + ofToString(health)), 32, 50);
 	ofSetColor(0, 0, 255, 255);
@@ -273,7 +293,7 @@ void ofApp::draw() {
 
 	ofDrawRectangle(sx - w / 2, sy - h / 2, w, h);
 
-	// Display Messages
+	//// Display Messages
 	if (gameWon) {
 		ofSetColor(ofColor::red);
 		msgFont.drawString("You Win!", 150, 400);
@@ -281,6 +301,22 @@ void ofApp::draw() {
 	if (gameLost) {
 		ofSetColor(ofColor::red);
 		msgFont.drawString("GAME OVER.\nTry Again.", 150, 400);
+	}
+
+	bool bText = true;
+	bool placeholderBool = true;
+	if (bText) {
+		ofSetColor(255, 255, 255);
+		string str;
+		str += "Placeholder Bool Shading: ";
+		if (placeholderBool)
+			str += "On\n";
+		else
+			str += "Off\n";
+
+		str += "(r): x Shading Toggle\n";
+		str += "(e): x Toggle\n";
+		ofDrawBitmapString(str, 20, 120);
 	}
 }
 
