@@ -1,4 +1,4 @@
-﻿# Ignore everything except the src directory and README.md
+# Ignore everything except the src directory and README.md
 *
 !src/
 !src/**/*
