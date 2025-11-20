@@ -1,8 +1,6 @@
-# Ignore everything except the src directory and README.md
-*
-!src/
-!src/**/*
-!bin/
-!bin/data/
-!bin/data/**/*
-!README.md
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/FiveFishOnFridays
+/.vs
