@@ -73,6 +73,14 @@ void MyCustomCamera::update(float deltaTime, float size) {
     
 }
 
+void MyCustomCamera::camRotate(glm::vec2 mouseInput) {
+	float mouseSensitivity = 0.003;
+	glm::vec2 rotationamt = mouseInput * mouseSensitivity;
+	pitch(rotationamt.y);
+	yaw(rotationamt.x);
+
+}
+
 // TODO: getqForward, getqSide, getqUp;
 // TODO: pitch, yaw, roll
 

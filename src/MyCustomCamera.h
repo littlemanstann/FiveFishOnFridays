@@ -6,6 +6,7 @@ public:
     MyCustomCamera();
 
     void update(float deltaTime, float size);
+	void camRotate(glm::vec2 mouseInput);
 
     glm::vec3 getqForward();
     glm::vec3 getqSide();

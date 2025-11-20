@@ -2,11 +2,15 @@
 
 Player::Player() {
 
-	radius = 12;
-	height = 12;
-	mesh = ofMesh::cone(radius, height, 12);
-	position = glm::vec3(0, 0, 0);
+		model.load("models/FISH.glb");
+		model.enableNormals();
+		model.setScale(0.03, -0.03, -0.03);//this is while trying to approximate scale to current movement
 
 
+}
 
+void Player::draw() {
+
+	ofSetColor(1.0);
+	model.drawFaces();
 }

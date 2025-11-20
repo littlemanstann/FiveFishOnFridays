@@ -13,19 +13,21 @@ void ofApp::setup() {
 	ofDisableArbTex();
 	ofLoadImage(mTex, "earth.jpg");
 	mTex.generateMipmap();
-	/*
-	"a mipmap is an image that contains our image at different
-	resolutions, from an high resolution version of the image
-	to a lower resolution version. When we look at the planet
-	earth from far away, the lower resolution version of that
-	image will be used to render the sphere, when we look at
-	the sphere closer, the higher resolution image will be use
-	instead. "
-	*/
 	mTex.setTextureMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_NEAREST);
-	
+
+	//PLAYER
 	cone.set(1, 3);
-	
+
+	modelPlayer.load("models/FISH.glb");
+	modelPlayer.enableNormals();
+
+	player = new Player();
+
+	modelFox.loadModel("models/Fox_05.fbx");
+	mousePosition = glm::vec2(0.0,0.0);
+
+
+	//LIGHTING
 	ofEnableSmoothing();
 	ofSetGlobalAmbientColor(ofColor(155, 155, 155));
 	ofSetSmoothLighting(true); //no documentation
@@ -77,6 +79,7 @@ void ofApp::setup() {
 	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 0, -200), POWERUP_BOOST_FORCE));
 	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 100, 100), POWERUP_BOOST_FORCE));
 	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 100, -100), POWERUP_BOOST_FORCE));
+
 
 	// Set up font
 	msgFont.loadFont("trixiepro_heavy.otf", 128);
@@ -267,6 +270,14 @@ void ofApp::draw() {
 
 	cone.draw();
 
+
+	//DrawPlayerModel
+
+	//ofSetColor(1.0);
+	////modelPlayer.drawFaces();
+	player->draw();
+	
+
 		// Draw Player Collision Sphere (Yansen Implementation) (For debugging) (drive beside the collidable object then turn to see if cone will collide with it)
 	//ofDrawSphere(cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3), PLAYER_RADIUS);
 	
@@ -332,7 +343,14 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-
+	glm::vec2 relative = glm::vec2(x, y) - mousePosition;
+	float length = sqrt(pow(relative.x, 2) + pow(relative.y, 2));
+	if (length > 100) {
+		relative = glm::vec2(0, 0);
+	}
+	//printf("Polling Mouse Movements: \n X: %.2f Y: %.2f LENGTH: %.2f\n", relative.x, relative.y, length);
+	mousePosition = glm::vec2(x,y);
+	cam.camRotate(relative);
 }
 
 //--------------------------------------------------------------

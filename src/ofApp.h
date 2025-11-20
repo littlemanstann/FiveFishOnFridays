@@ -1,10 +1,12 @@
 #pragma once
 
+#include "ofxAssimpModelLoader.h"
 #include "ofMain.h"
 #include "MyCustomCamera.h"
 #include "Beacon.h"
 #include "Powerup.h"
 #include "EnemyObject.h"
+#include "Player.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -65,4 +67,12 @@ public:
 	const float MIN_SIZE = 0.5f;
 
 	ofLight myLight;
+
+	ofxAssimpModelLoader modelPlayer;
+
+	ofxAssimpModelLoader modelFox;
+
+	Player * player;
+
+	glm::vec2 mousePosition;
 };

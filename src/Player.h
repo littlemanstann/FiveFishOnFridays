@@ -1,13 +1,12 @@
 #pragma once
 #include "ofMain.h"
-#include "MeshObject.h"
+#include "ofxAssimpModelLoader.h"
 
-
-class Player : public MeshObject {
+class Player {
 
 	public:
 		Player();
-
+		void draw();
 
 	protected:
 		float radius;
@@ -17,7 +16,7 @@ class Player : public MeshObject {
 		glm::vec3 cameraPos;
 
 
-
+		ofxAssimpModelLoader model;
 
 
 };
