@@ -1,5 +1,12 @@
 #include "ofApp.h"
 
+ofVbo vbo; // vertex buffer object to store all the particle data
+ofNode particleNode; // ofNode for using oF transform functions; will apply the node's transform to the particle system
+
+vector<glm::vec3> positions;
+vector<glm::vec3> normals;
+ofShader shader;
+
 //--------------------------------------------------------------
 void ofApp::setup() {
 	ofSetWindowTitle("Final Project - Five Fish On Fridays - 3501");
@@ -25,6 +32,46 @@ void ofApp::setup() {
 
 	modelFox.loadModel("models/Fox_05.fbx");
 	mousePosition = glm::vec2(0.0,0.0);
+
+	// Camera setup
+	cam.setNearClip(0.1f);
+	cam.setFarClip(1000.0f);
+	cam.setPosition(0, 0, 10);
+	cam.lookAt(glm::vec3(0, 0, 0));
+
+	emitter = std::make_unique<BubbleEmitter>(cam);
+	emitter->setPosition(glm::vec3(100, 100, -200));
+	emitter->setSize(1); // cube size
+
+	box1.set(1);
+	cone1.set(1, 2);
+	box1.move(100, 101, -202);
+	cone1.move(101, 101, -203);
+
+	box2.set(1);
+	cone2.set(1, 2);
+	box2.move(0, -4, 13);
+	cone2.move(1, -5, 12);
+
+	int numParticles = 2000;
+	positions.resize(numParticles);
+	normals.resize(numParticles);
+
+	for (int i = 0; i < numParticles / 2; i++) {
+		positions[i] = sphere_sample();
+
+		normals[i] = glm::normalize(positions[i]); // normalize puts them on the surface of a sphere
+		//        normals[i] = positions[i]; // plain position provides variable velocity
+		//        normals[i] = positions[i]*2*length(positions[i]); // even less uniform, ones on the outside travelling even faster
+	}
+	for (int i = numParticles / 2; i < numParticles; i++) {
+		positions[i] = circle_sample() * ofRandom(1.3f, 1.5f);
+		normals[i] = glm::normalize(positions[i]);
+	}
+	vbo.setVertexData(positions.data(), numParticles, GL_STATIC_DRAW);
+	vbo.setNormalData(normals.data(), numParticles, GL_STATIC_DRAW);
+
+	shader.load("shader/particle.vert", "shader/particle.frag", "shader/particle.geom");
 
 
 	//LIGHTING
@@ -85,13 +132,55 @@ void ofApp::setup() {
 	msgFont.loadFont("trixiepro_heavy.otf", 128);
 }
 
+glm::vec3 ofApp::sphere_sample()
+{
+	// random sample from within a sphere
+	glm::vec3 p;
+
+	// use simple rejection sampling
+	do {
+		p = glm::vec3(
+			ofRandom(-1.0f, 1.0f),
+			ofRandom(-1.0f, 1.0f),
+			ofRandom(-1.0f, 1.0f)
+		);
+	} while (glm::length2(p) > 1.0f); // is length^2 > 1? Failed, try again
+
+	// out of the loop, must have found a legal sample
+
+	return p;
+}
+
+glm::vec3 ofApp::circle_sample()
+{
+	// random sample from within a sphere
+	glm::vec3 p;
+
+	// use simple rejection sampling
+	do {
+		p = glm::vec3(
+			ofRandom(-1.0f, 1.0f),
+			0,
+			ofRandom(-1.0f, 1.0f)
+		);
+	} while (glm::length2(p) > 1.0f); // is length^2 > 1? Failed, try again
+
+	// out of the loop, must have found a legal sample
+
+	return p;
+}
+
 //--------------------------------------------------------------
 void ofApp::update() {
+
+	
 	float dayTime = 3;
 	myLight.setGlobalPosition(sin(ofGetElapsedTimef() / dayTime) * 1000, 1000, cos(ofGetElapsedTimef() / dayTime) * 1000); // where it is
 
 
 	cam.update(SIXTY_FPS, size); // 60 fps
+
+	if (emitter) emitter->update(SIXTY_FPS);
 	if (health == 0) {
 		enemies.clear();
 		asteroidVector.clear();
@@ -329,6 +418,103 @@ void ofApp::draw() {
 		str += "(e): x Toggle\n";
 		ofDrawBitmapString(str, 20, 120);
 	}
+
+	ofEnableDepthTest();
+	ofSetColor(255);
+	cam.begin();
+	ofSetColor(100);
+	cone1.drawFaces();
+	box1.drawFaces();
+	ofSetColor(255);
+	if (emitter) emitter->draw();
+	cam.end();
+
+
+	ofSetColor(255);
+	ofDrawBitmapString("BubbleEmitter Test", 20, 20);
+
+	particleNode.setPosition(glm::vec3(0.1, 0.1, 0)); // or whatever -- move particle system here
+
+	ofPushMatrix();
+
+	cam.begin();
+	cone2.drawFaces();
+	box2.drawFaces();
+	shader.begin();
+
+
+
+	shader.setUniform1f("pSize", 0.02); // particle point size
+	shader.setUniform1f("t", ofGetElapsedTimef()); // time
+
+
+	ofMatrix4x4 modelMatrix = particleNode.getGlobalTransformMatrix();
+	ofMatrix4x4 viewProjMatrix = cam.getModelViewProjectionMatrix();
+
+	ofMatrix4x4 mvp = viewProjMatrix * modelMatrix; // combine camera and ofNode transform
+
+	shader.setUniformMatrix4f("MVP", mvp); // full transformation for particle system
+	shader.setUniform1f("speed", 0.05);
+
+	vbo.draw(GL_POINTS, 0, positions.size() / 2 - 1); // draw all particles
+
+	shader.setUniform1f("speed", 0.3);
+	vbo.draw(GL_POINTS, positions.size() / 2, positions.size());
+
+	ofPopMatrix();
+
+	particleNode.setPosition(glm::vec3(-0.3, -0.45, 0)); // or whatever -- move particle system here
+
+	ofPushMatrix();
+
+	cam.begin();
+	shader.begin();
+
+	shader.setUniform1f("pSize", 0.02); // particle point size
+	shader.setUniform1f("t", ofGetElapsedTimef()); // time
+
+
+	modelMatrix = particleNode.getGlobalTransformMatrix();
+	viewProjMatrix = cam.getModelViewProjectionMatrix();
+
+	mvp = viewProjMatrix * modelMatrix; // combine camera and ofNode transform
+
+	shader.setUniformMatrix4f("MVP", mvp); // full transformation for particle system
+	shader.setUniform1f("speed", 0.05);
+
+	vbo.draw(GL_POINTS, 0, positions.size() / 2 - 1); // draw all particles
+
+	shader.setUniform1f("speed", 0.3);
+	vbo.draw(GL_POINTS, positions.size() / 2, positions.size());
+
+	ofPopMatrix();
+
+	particleNode.setPosition(glm::vec3(0.3, -0.6, 0)); // or whatever -- move particle system here
+
+	ofPushMatrix();
+
+	cam.begin();
+	shader.begin();
+
+	shader.setUniform1f("pSize", 0.02); // particle point size
+	shader.setUniform1f("t", ofGetElapsedTimef()); // time
+
+
+	modelMatrix = particleNode.getGlobalTransformMatrix();
+	viewProjMatrix = cam.getModelViewProjectionMatrix();
+
+	mvp = viewProjMatrix * modelMatrix; // combine camera and ofNode transform
+
+	shader.setUniformMatrix4f("MVP", mvp); // full transformation for particle system
+	shader.setUniform1f("speed", 0.05);
+
+	vbo.draw(GL_POINTS, 0, positions.size() / 2 - 1); // draw all particles
+
+	shader.setUniform1f("speed", 0.3);
+	vbo.draw(GL_POINTS, positions.size() / 2, positions.size());
+	shader.end();
+	cam.end();
+	ofPopMatrix();
 }
 
 //--------------------------------------------------------------

@@ -6,6 +6,8 @@
 #include "Beacon.h"
 #include "Powerup.h"
 #include "EnemyObject.h"
+#include "BubbleEmitter.h"
+#include "MyCustomCamera.h"
 #include "Player.h"
 
 #define PLAYER_RADIUS 1
@@ -35,6 +37,14 @@ public:
 
 	ofConePrimitive cone;
 	ofBoxPrimitive box;
+
+	ofConePrimitive cone1;
+	ofBoxPrimitive box2;
+	ofConePrimitive cone2;
+	ofBoxPrimitive box1;
+
+	glm::vec3 sphere_sample();
+	glm::vec3 circle_sample();
 
 	int asteroids;
 	float health = PLAYER_MAX_HP;
@@ -75,4 +85,6 @@ public:
 	Player * player;
 
 	glm::vec2 mousePosition;
+
+	std::unique_ptr<BubbleEmitter> emitter;
 };

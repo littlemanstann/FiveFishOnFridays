@@ -36,4 +36,6 @@ public:
     glm::vec3 move;
     float size;
 	bool canMoveFlag = true;
+
+    void betterLookAt(glm::vec3 target);
 };

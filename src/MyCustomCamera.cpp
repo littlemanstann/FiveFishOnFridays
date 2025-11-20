@@ -23,6 +23,19 @@ void MyCustomCamera::update(float deltaTime, float size) {
         return;
     }
 
+    if (ofGetKeyPressed('1')) {
+        move = glm::vec3(0, 0, 0);
+        position = glm::vec3(0, -5, 15);
+        //std::cout << "Goodbye debug!" << orientation;
+        betterLookAt(glm::vec3(1, 0, 0));
+        //std::cout << "Hello debug!" << orientation;
+    }
+    if (ofGetKeyPressed('2')) {
+        move = glm::vec3(0, 0, 0);
+        position = glm::vec3(100, 100, -205);
+        betterLookAt(glm::vec3(100, 100, -200));
+    }
+
     // W accel movement
     if (ofGetKeyPressed('w')) move += getqForward() * deltaTime * size * movementSpeed;
 	//check to see if the movement is going to be directly backwards.
@@ -44,6 +57,8 @@ void MyCustomCamera::update(float deltaTime, float size) {
         position = position + move;
     }
 
+
+    
     
 
     
@@ -71,6 +86,17 @@ void MyCustomCamera::update(float deltaTime, float size) {
 
 
     
+}
+
+void MyCustomCamera::betterLookAt(const glm::vec3 target)
+{
+    glm::vec3 targetDir = glm::normalize(target - position);
+    glm::vec3 currentDir = glm::normalize(orientation * glm::vec3(0, 0, -1));
+    float dot = glm::dot(currentDir, targetDir);
+    if (dot > 0.9999f) return;
+    glm::vec3 axis = (dot < -0.9999f) ? glm::vec3(0, 1, 0) : glm::normalize(glm::cross(currentDir, targetDir));
+    float angle = (dot < -0.9999f) ? glm::radians(180.0f) : acos(glm::clamp(dot, -1.0f, 1.0f));
+    orientation = glm::angleAxis(angle, axis) * orientation;
 }
 
 void MyCustomCamera::camRotate(glm::vec2 mouseInput) {
