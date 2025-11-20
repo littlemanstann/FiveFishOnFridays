@@ -6,3 +6,5 @@
 !bin/data/
 !bin/data/**/*
 !README.md
+!addons.make
+!config.make
