@@ -17,7 +17,6 @@ MyCustomCamera::MyCustomCamera() {
 	BASE_DOWN = glm::vec3(0, -1, 0);
     BASE_FORWARD = glm::vec3(0, 0, -1); // don't need to store all three, note
     move = glm::vec3(0, 0, 0);
-    size = 0;
 
 	setNearClip(0.1f);
 	setFarClip(1000.0f);
@@ -28,20 +27,20 @@ MyCustomCamera::MyCustomCamera() {
 
 	myPlayer.load("models/FISH.glb");
 	myPlayer.enableNormals();
-	myPlayer.setScale(0.02, -0.02, -0.02);
+	float scale = 0.02;
+	myPlayer.setScale(scale, -scale, -scale); //Player Model Scale
 }
 
-void MyCustomCamera::update(float deltaTime, float size) {
+void MyCustomCamera::update(float deltaTime) {
     if (!canMoveFlag) {
         return;
     }
 
+	//Look at VFX Code
     if (ofGetKeyPressed('1')) { //Move camera to look at fireworks
         move = glm::vec3(0, 0, 0);
         position = glm::vec3(0, -5, 15);
-        //std::cout << "Goodbye debug!" << orientation;
         betterLookAt(glm::vec3(1, 0, 0));
-        //std::cout << "Hello debug!" << orientation;
     }
     if (ofGetKeyPressed('2')) { //Move camera to look at bubble stream
         move = glm::vec3(0, 0, 0);
@@ -51,9 +50,9 @@ void MyCustomCamera::update(float deltaTime, float size) {
 
 
 
-	//Movement Code
-	if (ofGetKeyPressed('3')) {//Dash
-		dash = !dash;
+	//Dash Code, when moving you can dash
+	if (ofGetKeyPressed('r') && dash == false) {
+		dash = true;
 		timeDashBegin = ofGetElapsedTimef();
 	}
 
@@ -65,10 +64,12 @@ void MyCustomCamera::update(float deltaTime, float size) {
 	}
 
 	//Auto DOWNright Code, Uses basis matrix to determine how much to rotate fish to swim DOWN straight ?? idk why but down
+	//We are using BASE_DOWN in OFX but in Godot we used BASE_UP
 	float dotProduct = dot(BASE_DOWN, getqUp());
 	float radAngle = acos(dotProduct / (BASE_DOWN.length() * getqUp().length()));
 	float rightDotProduct = dot(BASE_DOWN, getqSide());
 	roll(radAngle * 3.2 * rightDotProduct * deltaTime);
+	
 
 	//Movement Input Code
 	float input = 0.0;
@@ -82,8 +83,10 @@ void MyCustomCamera::update(float deltaTime, float size) {
 		float accelerationGraph = (topline - baseline) / (1 + exp(-0.14 * abs(speed) - 5)) + baseline;
 		speed = fminf(input * accelerationGraph * deltaTime + speed, MAX_SPEED); //does not concern with going backwards...
 	} else {
+		//Stop dashing when you stop pressing a movement key
+		dash = false;
+
 		//Slowing Curve
-		dash = false; // you are not pressing a movement key so we disable the dash state
 		float baseline = 100;
 		float curveNearZero = baseline / (1 - exp(-0.127 * abs(speed)));
 		float curveNearMaxSpeed = baseline + 0.5 * exp(0.047 * abs(speed));
@@ -96,18 +99,14 @@ void MyCustomCamera::update(float deltaTime, float size) {
     // need to set ofNode parameters using internal position, orientation
 	myCone.setPosition(position);
     myCone.setOrientation(orientation);
-	myCone.rotateDeg(90, getqSide());
 
-	myPlayer.setPosition(position.x, position.y, position.z);
-	
-
-	////Target Position
-
-	//GLM Quirk, normalizing (0,0,0) does not return (0,0,0) it return NaN and gets upset :(
-	// 
-	//GLM Quirk, sometimes "position - glm::vec3(0,0,0)).length()" always gives zero so you
+	//1. GLM Quirk, normalizing (0,0,0) does not return (0,0,0) it return NaN and gets upset :(
+	//
+	//2. GLM Quirk, sometimes "position - glm::vec3(0,0,0)).length()" always gives zero so you
 	//have to manually find the distance using pythagorean theorum :(
 
+
+	//myCone Position Following Code
 	float d = sqrt(pow((position.x - targetPosition.x),2) + pow((position.y - targetPosition.y),2) + pow((position.z - targetPosition.z), 2));
 	if (d < 0.001) {
 		printf("Not a number!");
@@ -115,21 +114,24 @@ void MyCustomCamera::update(float deltaTime, float size) {
 		float targetSpeed = pow(d, 2);
 		targetPosition += glm::normalize((position - targetPosition)) * targetSpeed * deltaTime;
 	}
-	
+
+	//Camera Offset From Position Follower
 	pitch(xRotation * DEG_TO_RAD); //rotate to camera rotation offset
 	setPosition(targetPosition);
 	setPosition(targetPosition + orientation * cameraOffset);
 	setOrientation(orientation);
 	pitch(-xRotation * DEG_TO_RAD); //rotate back
-
-    
 }
 
 void MyCustomCamera::drawMe() {
 
-	ofSetColor(255.0, 0.0, 0.0);
-	myCone.draw();
+	//3. GLM Quirk, assimpModelLoader doesn't have setOrientation
+	// we must push a matrix of an ofNodePrimitive to rotate the fish model
+
+	ofPushMatrix();
+	ofMultMatrix(myCone.getGlobalTransformMatrix());
 	myPlayer.drawFaces();
+	ofPopMatrix();
 
 }
 

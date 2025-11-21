@@ -6,7 +6,7 @@ class MyCustomCamera : public ofCamera {
 public:
     MyCustomCamera();
 
-    void update(float deltaTime, float size);
+    void update(float deltaTime);
 	void drawMe();
 	void camRotate(glm::vec2 mouseInput);
 
@@ -41,7 +41,6 @@ public:
 	glm::vec3 BASE_DOWN;
 
     glm::vec3 move;
-    float size;
 	bool canMoveFlag = true;
 
     void betterLookAt(glm::vec3 target);

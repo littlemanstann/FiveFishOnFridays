@@ -174,7 +174,7 @@ void ofApp::update() {
 	myLight.setGlobalPosition(sin(ofGetElapsedTimef() / dayTime) * 1000, 1000, cos(ofGetElapsedTimef() / dayTime) * 1000); // where it is
 
 
-	cam.update(SIXTY_FPS, size); // 60 fps
+	cam.update(SIXTY_FPS); // 60 fps
 
 	if (emitter) emitter->update(SIXTY_FPS);
 	if (health == 0) {
