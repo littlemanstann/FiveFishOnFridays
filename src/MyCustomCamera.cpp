@@ -101,7 +101,7 @@ void MyCustomCamera::betterLookAt(const glm::vec3 target)
 
 void MyCustomCamera::camRotate(glm::vec2 mouseInput) {
 	float mouseSensitivity = 0.003;
-	glm::vec2 rotationamt = mouseInput * mouseSensitivity;
+	glm::vec2 rotationamt = -mouseInput * mouseSensitivity;
 	pitch(rotationamt.y);
 	yaw(rotationamt.x);
 
