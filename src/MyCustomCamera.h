@@ -1,7 +1,7 @@
 #pragma once
 #include "ofCamera.h"
 #include "of3dPrimitives.h"
-
+#include "ofxAssimpModelLoader.h"
 class MyCustomCamera : public ofCamera {
 public:
     MyCustomCamera();
@@ -62,5 +62,6 @@ public:
 	float xRotation = -15;
 
 	ofConePrimitive myCone;
+	ofxAssimpModelLoader myPlayer;
 	
 };

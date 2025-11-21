@@ -25,6 +25,10 @@ MyCustomCamera::MyCustomCamera() {
 	lookAt(glm::vec3(0, 0, 0));
 
 	myCone.set(1, 3);
+
+	myPlayer.load("models/FISH.glb");
+	myPlayer.enableNormals();
+	myPlayer.setScale(0.02, -0.02, -0.02);
 }
 
 void MyCustomCamera::update(float deltaTime, float size) {
@@ -94,6 +98,9 @@ void MyCustomCamera::update(float deltaTime, float size) {
     myCone.setOrientation(orientation);
 	myCone.rotateDeg(90, getqSide());
 
+	myPlayer.setPosition(position.x, position.y, position.z);
+	
+
 	////Target Position
 
 	//GLM Quirk, normalizing (0,0,0) does not return (0,0,0) it return NaN and gets upset :(
@@ -122,6 +129,7 @@ void MyCustomCamera::drawMe() {
 
 	ofSetColor(255.0, 0.0, 0.0);
 	myCone.draw();
+	myPlayer.drawFaces();
 
 }
 
