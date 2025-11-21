@@ -35,7 +35,6 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	ofConePrimitive cone;
 	ofBoxPrimitive box;
 
 	ofConePrimitive cone1;

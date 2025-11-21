@@ -23,7 +23,7 @@ void ofApp::setup() {
 	mTex.setTextureMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_NEAREST);
 
 	//PLAYER
-	cone.set(1, 3);
+	//cone.set(1, 3);
 
 	modelPlayer.load("models/FISH.glb");
 	modelPlayer.enableNormals();
@@ -34,10 +34,6 @@ void ofApp::setup() {
 	mousePosition = glm::vec2(0.0,0.0);
 
 	// Camera setup
-	cam.setNearClip(0.1f);
-	cam.setFarClip(1000.0f);
-	cam.setPosition(0, 0, 10);
-	cam.lookAt(glm::vec3(0, 0, 0));
 
 	emitter = std::make_unique<BubbleEmitter>(cam);
 	emitter->setPosition(glm::vec3(100, 100, -200));
@@ -218,7 +214,7 @@ void ofApp::update() {
 			printf("Collision with Speed Powerup!\n");
 
 			//update the speed variable
-			cam.addAcceleration(speedPowerups[i]->getSpeed());
+			//cam.addAcceleration(speedPowerups[i]->getSpeed());
 		}
 	}
 
@@ -271,22 +267,22 @@ void ofApp::update() {
 
 	// Enemy closest to current beacon starts moving towards it, stacks
 	if (!enemies.empty()) {
-		enemies[0].chase(cone.getPosition(), 0.5);
+		enemies[0].chase(cam.getPlayerPosition(), 0.5);
 
 		if (enemies.size() >= 2 && enemyActivation >= 1) {
-			enemies[1].chase(cone.getPosition(), 0.5);
+			enemies[1].chase(cam.getPlayerPosition(), 0.5);
 		}
 		if (enemies.size() >= 3 && enemyActivation >= 2) {
-			enemies[2].chase(cone.getPosition(), 0.5);
+			enemies[2].chase(cam.getPlayerPosition(), 0.5);
 		}
 		if (enemies.size() >= 4 && enemyActivation >= 3) {
-			enemies[3].chase(cone.getPosition(), 0.5);
+			enemies[3].chase(cam.getPlayerPosition(), 0.5);
 		}
 		if (enemies.size() >= 5 && enemyActivation >= 4) {
-			enemies[4].chase(cone.getPosition(), 0.5);
+			enemies[4].chase(cam.getPlayerPosition(), 0.5);
 		}
 		if (enemies.size() == 6 && enemyActivation >= 5) {
-			enemies[5].chase(cone.getPosition(), 0.5);
+			enemies[5].chase(cam.getPlayerPosition(), 0.5);
 		}
 	}
 
@@ -304,7 +300,7 @@ void ofApp::update() {
 	// Asteroid collision with the Player also does damage
 	for (int i = 0; i < asteroidVector.size(); i++) {
 		bool crash = false;
-		if (glm::length(glm::vec3(asteroidVector[i].getPosition() - cone.getPosition())) < (5 + PLAYER_RADIUS)) {
+		if (glm::length(glm::vec3(asteroidVector[i].getPosition() - cam.getPlayerPosition())) < (5 + PLAYER_RADIUS)) {
 
 			printf("Asteroid collision!\n");
 			crash = true;
@@ -350,26 +346,55 @@ void ofApp::draw() {
 	}
 	
 	//3rd person Camera (Jansen Implementation)
-	cone.setScale(size, size, size);
-	//Can use the cam.getqUp vector to keep the cone static right below the crosshair but it looks cooler this way.
-	cone.setPosition(cam.getPosition() + ((cam.getqForward()*10) + glm::vec3(0,1,0) * -3));
-	cone.lookAt(cam.getPosition() + (cam.getqForward() * 15), cam.getqUp());
-	cone.rotateDeg(90, cam.getqSide());
+	//cone.setScale(size, size, size);
+	////Can use the cam.getqUp vector to keep the cone static right below the crosshair but it looks cooler this way.
+	//cone.setPosition(cam.getPosition() + ((cam.getqForward()*10) + glm::vec3(0,1,0) * -3));
+	//cone.lookAt(cam.getPosition() + (cam.getqForward() * 15), cam.getqUp());
 
 
-	cone.draw();
+	//cone.draw();
 
 
 	//DrawPlayerModel
 
 	//ofSetColor(1.0);
 	////modelPlayer.drawFaces();
+	cam.drawMe();
 	player->draw();
 	
 
 		// Draw Player Collision Sphere (Yansen Implementation) (For debugging) (drive beside the collidable object then turn to see if cone will collide with it)
 	//ofDrawSphere(cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3), PLAYER_RADIUS);
-	
+
+	//-------------------------------------------------------------
+	//Environment, while coding the movement I needed a simple ground plane
+
+	//Floor
+	ofPushMatrix();
+	ofRotateXDeg(90);
+	ofSetColor(42, 50, 59);
+	ofDrawPlane(0, 0, 0, 500, 500);
+	ofPopMatrix();
+
+	//Tree Simple
+	glm::vec3 treePos(200, 0, -180);
+	ofPushMatrix();
+	ofSetColor(82, 37, 7);
+	ofTranslate(treePos.x, 30, treePos.z);
+	ofDrawCylinder(15, 60);
+	ofPopMatrix();
+
+	for (int i = 0; i < 5; i++) {
+		ofPushMatrix();
+		ofTranslate(treePos.x, (35 + i * 15) * 3, treePos.z);
+		ofRotateX(180);
+		ofScale(100 - i * 6);
+		ofSetColor(18, 115, 44);
+		ofDrawCone(0.6 - i * 0.1, 1);
+		ofPopMatrix();
+	}
+
+	//END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT
 	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space
 	myLight.disable();
 	cam.end();
