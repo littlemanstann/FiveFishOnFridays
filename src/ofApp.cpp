@@ -313,6 +313,10 @@ void ofApp::update() {
 			crash = false;
 		}
 	}
+
+	/// PLAYER ANIMATION UPDATE
+	player->update(30);
+
 }
 
 //--------------------------------------------------------------
@@ -394,7 +398,7 @@ void ofApp::draw() {
 		ofPopMatrix();
 	}
 
-	//END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT
+	///-----END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT-----
 	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space
 	myLight.disable();
 	cam.end();

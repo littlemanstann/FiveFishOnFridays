@@ -7,7 +7,11 @@ class Player {
 
 	public:
 		Player();
+
+		void update(float velocity);
 		void draw();
+
+		void setPosition(const glm::vec3& pos);
 
 
 

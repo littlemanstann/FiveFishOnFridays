@@ -44,10 +44,9 @@ void MeshObject::setRotationMatrix(float angleDeg, const glm::vec3& axis) {
 
 // Set orbit matrix by angle (degrees) around axis and center point (uses RotationMatrix variable, shared with setRotationMatrix)
 void MeshObject::setOrbitMatrix(float angleDeg, const glm::vec3& axis, const glm::vec3& center) {
-	rotationAngle += angleDeg;
 	rotationAxis = axis;
 	rotationMatrix = glm::translate(glm::mat4(1.0f), center) *
-					 glm::rotate(glm::mat4(1.0f), glm::radians(rotationAngle), rotationAxis) *
+					 glm::rotate(glm::mat4(1.0f), glm::radians(angleDeg), rotationAxis) *
 					 glm::translate(glm::mat4(1.0f), -center);
 }
 
