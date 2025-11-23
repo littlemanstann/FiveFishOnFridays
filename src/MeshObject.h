@@ -5,6 +5,7 @@
 class MeshObject {
 public:
     MeshObject() {}
+	MeshObject(const ofMesh& m) : mesh(m) {}
     virtual ~MeshObject() {}
 
     // Draw with current transform
