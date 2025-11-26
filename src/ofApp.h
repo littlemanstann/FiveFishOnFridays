@@ -3,9 +3,6 @@
 #include "ofxAssimpModelLoader.h"
 #include "ofMain.h"
 #include "MyCustomCamera.h"
-#include "Beacon.h"
-#include "Powerup.h"
-#include "EnemyObject.h"
 #include "BubbleEmitter.h"
 #include "MyCustomCamera.h"
 #include "Player.h"
@@ -56,11 +53,6 @@ public:
 	// Variable for third-person camera player position
 	glm::vec3 playerPos;
 
-	vector<Beacon> beacons;
-	vector<HealthPowerup *> healthPowerups;
-	vector<SpeedPowerup *> speedPowerups;
-	vector<EnemyObject> enemies;
-	vector<ofNode> asteroidVector;
 
 	ofNode body[500];
 
@@ -87,4 +79,11 @@ public:
 	glm::vec2 mousePosition;
 
 	std::unique_ptr<BubbleEmitter> emitter;
+
+	void makeScreenQuad();
+
+
+	ofFbo fbo;          // framebuffer for first pass
+	ofShader speedShader;    // postprocessing shader
+	ofMesh quad;
 };

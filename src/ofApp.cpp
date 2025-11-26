@@ -12,15 +12,33 @@ void ofApp::setup() {
 	ofSetWindowTitle("Final Project - Five Fish On Fridays - 3501");
 	ofBackground(0);
 	ofSetFrameRate(60); // caps the framerate at 60FPS
+	//fbo.allocate(settings);
+	//fbo.allocate(ofGetWidth(), ofGetHeight(), GL_RGBA, 4);
+	ofFbo::Settings settings;
+	settings.width = ofGetWidth();
+	settings.height = ofGetHeight();
+	settings.internalformat = GL_RGBA;
+	settings.useDepth = true;  // THIS IS CRITICAL!
+	settings.depthStencilAsTexture = false;
+	settings.textureTarget = GL_TEXTURE_2D;
+	settings.numSamples = 4;  // Optional: anti-aliasing
+	fbo.allocate(settings);
+
+	speedShader.load("shader/screen_space_quad.vert", "shader/screen_space_quad.frag");
+
+	if (!speedShader.isLoaded()) {
+		ofLogError() << "Spped Shader failed to load!";
+		ofExit();
+	}
 
 	ofSetSphereResolution(50);
 
 	ofTrueTypeFont::setGlobalDpi(72);
 
 	ofDisableArbTex();
-	ofLoadImage(mTex, "earth.jpg");
-	mTex.generateMipmap();
-	mTex.setTextureMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_NEAREST);
+	//ofLoadImage(mTex, "earth.jpg");
+	/*generateMipmap();
+	mTex.setTextureMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_NEAREST);*/
 
 	//PLAYER
 	//cone.set(1, 3);
@@ -82,50 +100,15 @@ void ofApp::setup() {
 	calibri.load("calibri.ttf", 32, true, true);
 	calibri.setLineHeight(18.0f);
 	calibri.setLetterSpacing(1.037);
-	
-
-
-	asteroids = 200;
-	for (int i = 0; i < asteroids; i++)
-	{
-		body[i].setPosition(
-			glm::vec3(
-				ofRandom(-800, 800),
-				ofRandom(-800, 800),
-				ofRandom(-800, 800))); // random somewhere in space
-		asteroidVector.push_back(body[i]);
-	}
-
-	// Setting up beacons at the cardinal points
-	beacons.push_back(Beacon(1.0f, glm::vec3(0, 50, 200)));
-	beacons.back().setCurrentBeacon(true); // First beacon is the current beacon
-	beacons.push_back(Beacon(1.0f, glm::vec3(200, -40, 150)));
-	beacons.push_back(Beacon(1.0f, glm::vec3(300, 0, 0)));
-	beacons.push_back(Beacon(1.0f, glm::vec3(20, 50, -5)));
-	beacons.push_back(Beacon(1.0f, glm::vec3(-250, -100, -5)));
-	beacons.push_back(Beacon(1.0f, glm::vec3(-250, 300, -40)));
-
-	enemies.push_back(EnemyObject(1.0f, glm::vec3(0, 70, 200)));
-	enemies.push_back(EnemyObject(1.0f, glm::vec3(200, -20, 150)));
-	enemies.push_back(EnemyObject(1.0f, glm::vec3(300, 20, 0)));
-	enemies.push_back(EnemyObject(1.0f, glm::vec3(20, 70, -5)));
-	enemies.push_back(EnemyObject(1.0f, glm::vec3(-250, -80, -5)));
-	enemies.push_back(EnemyObject(1.0f, glm::vec3(-250, 320, -40)));
-	enemyActivation = 0;
-
-	healthPowerups.push_back(new HealthPowerup(20, glm::vec3(0,0,200), 1));
-	healthPowerups.push_back(new HealthPowerup(20, glm::vec3(0, 0, -200), 1));
-	healthPowerups.push_back(new HealthPowerup(20, glm::vec3(0, 100, 100), 1));
-	healthPowerups.push_back(new HealthPowerup(20, glm::vec3(0, 100, -100), 1));
-
-	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 0, 200), POWERUP_BOOST_FORCE));
-	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 0, -200), POWERUP_BOOST_FORCE));
-	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 100, 100), POWERUP_BOOST_FORCE));
-	speedPowerups.push_back(new SpeedPowerup(20, glm::vec3(100, 100, -100), POWERUP_BOOST_FORCE));
-
 
 	// Set up font
 	msgFont.loadFont("trixiepro_heavy.otf", 128);
+
+	makeScreenQuad();
+
+
+	//fbo.getTexture().setTextureWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
+	ofEnableAlphaBlending();
 }
 
 glm::vec3 ofApp::sphere_sample()
@@ -177,115 +160,10 @@ void ofApp::update() {
 	cam.update(SIXTY_FPS); // 60 fps
 
 	if (emitter) emitter->update(SIXTY_FPS);
-	if (health == 0) {
-		enemies.clear();
-		asteroidVector.clear();
-		// Stop player movement
-		cam.canMove(false);
-		gameLost = true;
-	}
-
 	// Set playerPos to be the object in third-person view
 	playerPos = cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3);
 
-	//Check for Collisions Between HealthPowerups and the Player
-	for (int i = 0; i < healthPowerups.size(); i++) {
-		if (Beacon::collisionCheck(healthPowerups[i]->getPosition(), playerPos, PLAYER_RADIUS * size + healthPowerups[i]->getRadius())) {
-			healthPowerups[i]->setDead();
-
-			//Collision!
-			printf("Collision with Health Powerup!\n");
-			printf("Prev Health: %.0f\n", health);
-
-			//update the health variable
-			health += healthPowerups[i]->getHealth();
-
-			//print the new health
-			printf("New Health: %.0f\n\n", health);
-		}
-	}	glm::vec3 test = playerPos;
-
-	//Check for Collisions Between SpeedPowerups and the Player
-	for (int i = 0; i < speedPowerups.size(); i++) {
-		if (Beacon::collisionCheck(speedPowerups[i]->getPosition(), playerPos, PLAYER_RADIUS*size + speedPowerups[i]->getRadius())){
-			speedPowerups[i]->setDead();
-
-			//Collision!
-			printf("Collision with Speed Powerup!\n");
-
-			//update the speed variable
-			//cam.addAcceleration(speedPowerups[i]->getSpeed());
-		}
-	}
-
-
-	// Check for Colllisions between the first beacon and the Player
-	if (!beacons.empty() && Beacon::collisionCheck(beacons.front().getPosition(), playerPos, PLAYER_RADIUS*size +beacons.front().getRadius())) {
-		beacons.erase(beacons.begin());
-		// Handle win condition
-		if (beacons.size() == 0) {
-			printf("You Win!\n");
-			// Handle asteroid clearing and enemy clearing
-			printf("All enemies and asteroids erased.");
-			enemies.clear();
-			asteroidVector.clear();
-			gameWon = true;
-			//ofExit();
-		}
-		else {
-			beacons.front().setCurrentBeacon(true);
-			enemyActivation++;
-		}
-	}
-
-	// Check for collisions Between Enemies and the Player
-	for (int i = 0; i < enemies.size(); i++) {
-		if (enemies[i].collisionCheck(playerPos, PLAYER_RADIUS)) {
-			enemies.erase(enemies.begin() + i);
-			printf("Enemy %i defeated!", i);
-			health --;
-			printf("New Health: %.0f\n\n", health);
-		}
-	}
-
-	// Delete Objects Marked for Deletion
-	healthPowerups.erase(std::remove_if(healthPowerups.begin(), healthPowerups.end(), [](HealthPowerup * obj) { return obj->getDead(); }), healthPowerups.end());
-	speedPowerups.erase(std::remove_if(speedPowerups.begin(), speedPowerups.end(), [](SpeedPowerup * obj) { return obj->getDead(); }), speedPowerups.end());
-	//Grow Shrink Player Size (Jansen Implementation)
-	if (ofGetKeyPressed('e')) {
-		size += SIXTY_FPS;
-		if(size > MAX_SIZE) {
-			size = MAX_SIZE;
-		}
-	}
-	if (ofGetKeyPressed('q')) {
-		size -= SIXTY_FPS;
-		if (size < MIN_SIZE) {
-			size = MIN_SIZE;
-		}
-	}
-
-	// Enemy closest to current beacon starts moving towards it, stacks
-	if (!enemies.empty()) {
-		enemies[0].chase(cam.getPlayerPosition(), 0.5);
-
-		if (enemies.size() >= 2 && enemyActivation >= 1) {
-			enemies[1].chase(cam.getPlayerPosition(), 0.5);
-		}
-		if (enemies.size() >= 3 && enemyActivation >= 2) {
-			enemies[2].chase(cam.getPlayerPosition(), 0.5);
-		}
-		if (enemies.size() >= 4 && enemyActivation >= 3) {
-			enemies[3].chase(cam.getPlayerPosition(), 0.5);
-		}
-		if (enemies.size() >= 5 && enemyActivation >= 4) {
-			enemies[4].chase(cam.getPlayerPosition(), 0.5);
-		}
-		if (enemies.size() == 6 && enemyActivation >= 5) {
-			enemies[5].chase(cam.getPlayerPosition(), 0.5);
-		}
-	}
-
+	
 	//// Respawn enemies if all are defeated
 	//if (enemies.empty() && !gameWon && !gameLost) {
 	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(300, 0, -20)));
@@ -298,112 +176,34 @@ void ofApp::update() {
 	//}
 
 	// Asteroid collision with the Player also does damage
-	for (int i = 0; i < asteroidVector.size(); i++) {
-		bool crash = false;
-		if (glm::length(glm::vec3(asteroidVector[i].getPosition() - cam.getPlayerPosition())) < (5 + PLAYER_RADIUS)) {
-
-			printf("Asteroid collision!\n");
-			crash = true;
-		}
-		if (crash) {
-			asteroidVector.erase(asteroidVector.begin() + i);
-			printf("Asteroid %i destroyed!", i);
-			health--;
-			printf("New Health: %.0f\n\n", health);
-			crash = false;
-		}
-	}
-
 	/// PLAYER ANIMATION UPDATE
 	player->update(30);
 
 }
 
-//--------------------------------------------------------------
-void ofApp::draw() {
-	cam.begin();
-	myLight.enable();
-	
-	ofEnableDepthTest();
+void ofApp::makeScreenQuad() {
 
+	// Build a fullscreen quad with texture coordinates
+	quad.setMode(OF_PRIMITIVE_TRIANGLE_STRIP); // fan can also work
 
-	ofSetColor(255);
-	for (int i = 0; i < asteroids; i++)
-		body[i].draw();
+	// bottom-left
+	quad.addVertex(glm::vec3(0, ofGetHeight(), 0));
+	quad.addTexCoord(glm::vec2(0.0, 1.0));
 
-	for (Beacon beacon : beacons) {
-		beacon.draw();
-	}
+	// top-left
+	quad.addVertex(glm::vec3(0, 0, 0));
+	quad.addTexCoord(glm::vec2(0.0, 0.0));
 
-	for (EnemyObject enemy : enemies) {
-		enemy.draw();
-	}
+	// bottom-right
+	quad.addVertex(glm::vec3(ofGetWidth(), ofGetHeight(), 0));
+	quad.addTexCoord(glm::vec2(1.0, 1.0));
 
-	mTex.bind();
-	for (int i = 0; i < healthPowerups.size(); i++) {
-		healthPowerups[i]->draw();
-	}
-	mTex.unbind();
+	// top-right
+	quad.addVertex(glm::vec3(ofGetWidth(), 0, 0));
+	quad.addTexCoord(glm::vec2(1.0, 0.0));
+}
 
-	for (int i = 0; i < speedPowerups.size(); i++) {
-		speedPowerups[i]->draw();
-	}
-	
-	//3rd person Camera (Jansen Implementation)
-	//cone.setScale(size, size, size);
-	////Can use the cam.getqUp vector to keep the cone static right below the crosshair but it looks cooler this way.
-	//cone.setPosition(cam.getPosition() + ((cam.getqForward()*10) + glm::vec3(0,1,0) * -3));
-	//cone.lookAt(cam.getPosition() + (cam.getqForward() * 15), cam.getqUp());
-
-
-	//cone.draw();
-
-
-	//DrawPlayerModel
-
-	//ofSetColor(1.0);
-	////modelPlayer.drawFaces();
-	cam.drawMe();
-	player->draw();
-	
-
-		// Draw Player Collision Sphere (Yansen Implementation) (For debugging) (drive beside the collidable object then turn to see if cone will collide with it)
-	//ofDrawSphere(cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3), PLAYER_RADIUS);
-
-	//-------------------------------------------------------------
-	//Environment, while coding the movement I needed a simple ground plane
-
-	//Floor
-	ofPushMatrix();
-	ofRotateXDeg(90);
-	ofSetColor(42, 50, 59);
-	ofDrawPlane(0, 0, 0, 500, 500);
-	ofPopMatrix();
-
-	//Tree Simple
-	glm::vec3 treePos(200, 0, -180);
-	ofPushMatrix();
-	ofSetColor(82, 37, 7);
-	ofTranslate(treePos.x, 30, treePos.z);
-	ofDrawCylinder(15, 60);
-	ofPopMatrix();
-
-	for (int i = 0; i < 5; i++) {
-		ofPushMatrix();
-		ofTranslate(treePos.x, (35 + i * 15) * 3, treePos.z);
-		ofRotateX(180);
-		ofScale(100 - i * 6);
-		ofSetColor(18, 115, 44);
-		ofDrawCone(0.6 - i * 0.1, 1);
-		ofPopMatrix();
-	}
-
-	///-----END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT-----
-	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space
-	myLight.disable();
-	cam.end();
-
-	//// Crosshairs (Yansen Inplementation)
+/*	//// Crosshairs (Yansen Inplementation)
 	float sx = ofGetWidth() / 2.0f;
 	float sy = ofGetHeight() / 2.0f;
 
@@ -415,22 +215,9 @@ void ofApp::draw() {
 	h = 15;
 
 	////Speed and Health UI
-	ofSetColor(0, 255, 0, 255);
-	calibri.drawString(("Health: " + ofToString(health)), 32, 50);
-	ofSetColor(0, 0, 255, 255);
-	calibri.drawString("Speed: " + ofToString(glm::length(cam.getSpeed())), 32, 100);
 
 	ofDrawRectangle(sx - w / 2, sy - h / 2, w, h);
 
-	//// Display Messages
-	if (gameWon) {
-		ofSetColor(ofColor::red);
-		msgFont.drawString("You Win!", 150, 400);
-	}
-	if (gameLost) {
-		ofSetColor(ofColor::red);
-		msgFont.drawString("GAME OVER.\nTry Again.", 150, 400);
-	}
 
 	bool bText = true;
 	bool placeholderBool = true;
@@ -544,6 +331,83 @@ void ofApp::draw() {
 	shader.end();
 	cam.end();
 	ofPopMatrix();
+*/
+
+//--------------------------------------------------------------
+void ofApp::draw() {
+
+	fbo.begin();
+	ofClear(0, 0, 0, 255);
+	cam.begin();
+	myLight.enable();
+	
+	ofEnableDepthTest();
+
+
+	ofSetColor(255);
+
+
+	mTex.bind();
+	////modelPlayer.drawFaces();
+	cam.drawMe();
+	player->draw();
+	mTex.unbind(); 
+	
+	//-------------------------------------------------------------
+	//Environment, while coding the movement I needed a simple ground plane
+
+	//Floor
+	ofPushMatrix();
+	ofRotateXDeg(90);
+	ofSetColor(42, 50, 59);
+	ofDrawPlane(0, 0, 0, 500, 500);
+	ofPopMatrix();
+
+	//Tree Simple
+	glm::vec3 treePos(200, 0, -180);
+	ofPushMatrix();
+	ofSetColor(82, 37, 7);
+	ofTranslate(treePos.x, 30, treePos.z);
+	ofDrawCylinder(15, 60);
+	ofPopMatrix();
+
+	for (int i = 0; i < 5; i++) {
+		ofPushMatrix();
+		ofTranslate(treePos.x, (35 + i * 15) * 3, treePos.z);
+		ofRotateX(180);
+		ofScale(100 - i * 6);
+		ofSetColor(18, 115, 44);
+		ofDrawCone(0.6 - i * 0.1, 1);
+		ofPopMatrix();
+	}
+
+	///-----END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT-----
+	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space
+	myLight.disable();
+	cam.end();
+	fbo.end();
+
+	
+
+
+
+	// ---------- Second pass: draw FBO with shader --==========
+
+
+	speedShader.begin();
+	speedShader.setUniformTexture("tex0", fbo.getTexture(), 0);
+	speedShader.setUniform1f("timer", ofGetElapsedTimef());
+	speedShader.setUniform1f("dashIntensity", 0.1);
+	// any other uniforms here
+
+	// Draw fullscreen quad
+	//fbo.getTexture().bind();
+	quad.draw();
+	//fbo.getTexture().unbind();
+
+	speedShader.end();
+
+	//fbo.draw(0, 0); // draw outside shader to see the content of the fbo directly
 }
 
 //--------------------------------------------------------------
