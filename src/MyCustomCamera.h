@@ -2,6 +2,7 @@
 #include "ofCamera.h"
 #include "of3dPrimitives.h"
 #include "ofxAssimpModelLoader.h"
+
 class MyCustomCamera : public ofCamera {
 public:
     MyCustomCamera();
@@ -29,6 +30,12 @@ public:
     // Dictates if the player can move or not
     void canMove(bool move) { canMoveFlag = move; }
 	bool dash = false;
+	bool isTalking = false;
+	float interactRange = 5.0f;
+	ofConePrimitive myCone;
+	void betterLookAt(glm::vec3 target);
+
+	
 
 private:
     float movementSpeed;
@@ -44,7 +51,7 @@ private:
     glm::vec3 move;
 	bool canMoveFlag = true;
 
-    void betterLookAt(glm::vec3 target);
+    
 
 
 	float MAX_SPEED = 100;//reccomended to not change max speed
@@ -55,13 +62,14 @@ private:
 	float speedModifier = 0;
 	float mouseSensitivity = 0.003;
 	
+	
 	float timeDashBegin = 0.0;
 
 	glm::vec3 targetPosition;
 	glm::vec3 cameraOffset;
 	float xRotation = -15;
 
-	ofConePrimitive myCone;
+	
 	ofxAssimpModelLoader myPlayer;
 	
 };

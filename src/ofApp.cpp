@@ -33,6 +33,8 @@ void ofApp::setup() {
 
 	ofSetSphereResolution(50);
 
+
+
 	ofTrueTypeFont::setGlobalDpi(72);
 
 	ofDisableArbTex();
@@ -60,7 +62,16 @@ void ofApp::setup() {
 	box1.set(1);
 	cone1.set(1, 2);
 	box1.move(100, 101, -202);
-	cone1.move(101, 101, -203);
+	cone1.move(25, 25, -2);
+
+	posOfInteractableObjs.push_back(cone1.getPosition());
+	msgsOfInteractableObjs.push_back({ "I am in denial that it is friday.",
+		"I am angry that it is friday!",
+		"Can I change the fact that it is friday?",
+		"I am sad that today is friday...",
+		"I accept that today is friday"
+		});
+	dialogue.setup(100, 400, 600, 150);
 
 	box2.set(1);
 	cone2.set(1, 2);
@@ -155,9 +166,31 @@ void ofApp::update() {
 	
 	float dayTime = 3;
 	myLight.setGlobalPosition(sin(ofGetElapsedTimef() / dayTime) * 1000, 1000, cos(ofGetElapsedTimef() / dayTime) * 1000); // where it is
+	if (!cam.isTalking) {
+		cam.update(SIXTY_FPS);
+	}
+	dialogue.update();
+	if (!dialogue.isActive()) {
+		cam.isTalking = false;
+	}
+	 // 60 fps
 
+	//Jansen: Adding the interact button here. Will iterate over all things it can talk to and if it is close enough to one of them will set talking to true
+	if (ofGetKeyPressed('e') && cam.isTalking == false) {
+		for (size_t i = 0; i < posOfInteractableObjs.size(); i++) {
+			glm::vec3 p = posOfInteractableObjs[i];
+			float test = glm::length(cam.myCone.getPosition() - p);
+			if (glm::length(cam.myCone.getPosition() - p) < cam.interactRange) {
+				//printf("Not a number!");
+				cam.isTalking = true;
+				cam.betterLookAt(p);
+				dialogue.setDialogue(msgsOfInteractableObjs[i]);
+			}
+		}
+			
 
-	cam.update(SIXTY_FPS); // 60 fps
+		//cam.isTalking = true;
+	}
 
 	if (emitter) emitter->update(SIXTY_FPS);
 	// Set playerPos to be the object in third-person view
@@ -371,6 +404,9 @@ void ofApp::draw() {
 	ofDrawCylinder(15, 60);
 	ofPopMatrix();
 
+	//Cone you can talk to
+	cone1.drawFaces();
+
 	for (int i = 0; i < 5; i++) {
 		ofPushMatrix();
 		ofTranslate(treePos.x, (35 + i * 15) * 3, treePos.z);
@@ -412,13 +448,15 @@ void ofApp::draw() {
 	else {
 		fbo.draw(0, 0);
 	}
+
+	dialogue.draw();
 	
 	
 }
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
-
+	dialogue.keyPressed(key);
 }
 
 //--------------------------------------------------------------

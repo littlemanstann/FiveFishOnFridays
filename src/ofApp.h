@@ -6,6 +6,7 @@
 #include "BubbleEmitter.h"
 #include "MyCustomCamera.h"
 #include "Player.h"
+#include "DialogueBox.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -86,4 +87,11 @@ public:
 	ofFbo fbo;          // framebuffer for first pass
 	ofShader speedShader;    // postprocessing shader
 	ofMesh quad;
+
+	//For the dialogue system
+
+	//Make sure that the indexes are same for pos and msgs. i.e fish one's pos is at the same index as fish one's msgs
+	vector<glm::vec3> posOfInteractableObjs;
+	vector<vector<string>> msgsOfInteractableObjs;
+	DialogueBox dialogue;
 };

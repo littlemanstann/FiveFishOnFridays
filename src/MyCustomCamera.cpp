@@ -29,9 +29,15 @@ MyCustomCamera::MyCustomCamera() {
 	myPlayer.enableNormals();
 	float scale = 0.02;
 	myPlayer.setScale(scale, -scale, -scale); //Player Model Scale
+	
 }
 
 void MyCustomCamera::update(float deltaTime) {
+
+	if (isTalking) {
+
+		return;
+	}
     if (!canMoveFlag) {
         return;
     }
@@ -55,6 +61,8 @@ void MyCustomCamera::update(float deltaTime) {
 		dash = true;
 		timeDashBegin = ofGetElapsedTimef();
 	}
+
+	
 
 	//Variable Smoothing Code: https://www.desmos.com/calculator/98wozkt1jb
 	if (dash) {
@@ -109,7 +117,7 @@ void MyCustomCamera::update(float deltaTime) {
 	//myCone Position Following Code
 	float d = sqrt(pow((position.x - targetPosition.x),2) + pow((position.y - targetPosition.y),2) + pow((position.z - targetPosition.z), 2));
 	if (d < 0.001) {
-		printf("Not a number!");
+		//printf("Not a number!");
 	} else {
 		float targetSpeed = pow(d, 2);
 		targetPosition += glm::normalize((position - targetPosition)) * targetSpeed * deltaTime;
