@@ -28,8 +28,9 @@ public:
 
     // Dictates if the player can move or not
     void canMove(bool move) { canMoveFlag = move; }
+	bool dash = false;
 
-	private:
+private:
     float movementSpeed;
     float rotationSpeed;
     glm::vec3 position;
@@ -53,7 +54,7 @@ public:
 	float speed = 0;
 	float speedModifier = 0;
 	float mouseSensitivity = 0.003;
-	bool dash = false;
+	
 	float timeDashBegin = 0.0;
 
 	glm::vec3 targetPosition;

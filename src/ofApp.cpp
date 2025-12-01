@@ -393,21 +393,27 @@ void ofApp::draw() {
 
 	// ---------- Second pass: draw FBO with shader --==========
 
+	if (cam.dash) {
+		speedShader.begin();
+		speedShader.setUniformTexture("tex0", fbo.getTexture(), 0);
+		speedShader.setUniform1f("timer", ofGetElapsedTimef());
+		speedShader.setUniform1f("dashIntensity", 0.4);
+		// any other uniforms here
 
-	speedShader.begin();
-	speedShader.setUniformTexture("tex0", fbo.getTexture(), 0);
-	speedShader.setUniform1f("timer", ofGetElapsedTimef());
-	speedShader.setUniform1f("dashIntensity", 0.1);
-	// any other uniforms here
+		// Draw fullscreen quad
+		//fbo.getTexture().bind();
+		quad.draw();
+		//fbo.getTexture().unbind();
 
-	// Draw fullscreen quad
-	//fbo.getTexture().bind();
-	quad.draw();
-	//fbo.getTexture().unbind();
+		speedShader.end();
 
-	speedShader.end();
-
-	//fbo.draw(0, 0); // draw outside shader to see the content of the fbo directly
+		//fbo.draw(0, 0); // draw outside shader to see the content of the fbo directly
+	}
+	else {
+		fbo.draw(0, 0);
+	}
+	
+	
 }
 
 //--------------------------------------------------------------
