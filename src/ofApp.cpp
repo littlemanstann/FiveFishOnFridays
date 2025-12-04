@@ -120,6 +120,16 @@ void ofApp::setup() {
 
 	//fbo.getTexture().setTextureWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
 	ofEnableAlphaBlending();
+
+	// Mouse Lock Setup
+	mouseLocked = false; // Start with the mouse unlocked
+	ofShowCursor(); // Ensure the cursor is visible initially
+	// Get the GLFW window pointer
+	ofAppGLFWWindow* win = dynamic_cast<ofAppGLFWWindow*>(ofGetWindowPtr());
+	if (win) {
+		glfwWindow = win->getGLFWWindow();
+	}
+	mouseLocked = false;
 }
 
 glm::vec3 ofApp::sphere_sample()
@@ -196,22 +206,8 @@ void ofApp::update() {
 	// Set playerPos to be the object in third-person view
 	playerPos = cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3);
 
-	
-	//// Respawn enemies if all are defeated
-	//if (enemies.empty() && !gameWon && !gameLost) {
-	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(300, 0, -20)));
-	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(-100, 0, -20)));
-	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(100, 200, -20)));
-	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(100, -200, -20)));
-	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(-300, 200, -20)));
-	//	enemies.push_back(EnemyObject(1.0f, playerPos + glm::vec3(-100, 300, -20)));
-	//	enemyActivation = 0;
-	//}
-
-	// Asteroid collision with the Player also does damage
 	/// PLAYER ANIMATION UPDATE
 	player->update(30);
-
 }
 
 void ofApp::makeScreenQuad() {
@@ -236,135 +232,6 @@ void ofApp::makeScreenQuad() {
 	quad.addTexCoord(glm::vec2(1.0, 0.0));
 }
 
-/*	//// Crosshairs (Yansen Inplementation)
-	float sx = ofGetWidth() / 2.0f;
-	float sy = ofGetHeight() / 2.0f;
-
-	float w = 15;
-	float h = 2;
-
-	ofDrawRectangle(sx - w / 2, sy - h / 2, w, h);
-	w = 2;
-	h = 15;
-
-	////Speed and Health UI
-
-	ofDrawRectangle(sx - w / 2, sy - h / 2, w, h);
-
-
-	bool bText = true;
-	bool placeholderBool = true;
-	if (bText) {
-		ofSetColor(255, 255, 255);
-		string str;
-		str += "Placeholder Bool Shading: ";
-		if (placeholderBool)
-			str += "On\n";
-		else
-			str += "Off\n";
-
-		str += "(r): x Shading Toggle\n";
-		str += "(e): x Toggle\n";
-		ofDrawBitmapString(str, 20, 120);
-	}
-
-	ofEnableDepthTest();
-	ofSetColor(255);
-	cam.begin();
-	ofSetColor(100);
-	cone1.drawFaces();
-	box1.drawFaces();
-	ofSetColor(255);
-	if (emitter) emitter->draw();
-	cam.end();
-
-
-	ofSetColor(255);
-	ofDrawBitmapString("BubbleEmitter Test", 20, 20);
-
-	particleNode.setPosition(glm::vec3(0.1, 0.1, 0)); // or whatever -- move particle system here
-
-	ofPushMatrix();
-
-	cam.begin();
-	cone2.drawFaces();
-	box2.drawFaces();
-	shader.begin();
-
-
-
-	shader.setUniform1f("pSize", 0.02); // particle point size
-	shader.setUniform1f("t", ofGetElapsedTimef()); // time
-
-
-	ofMatrix4x4 modelMatrix = particleNode.getGlobalTransformMatrix();
-	ofMatrix4x4 viewProjMatrix = cam.getModelViewProjectionMatrix();
-
-	ofMatrix4x4 mvp = viewProjMatrix * modelMatrix; // combine camera and ofNode transform
-
-	shader.setUniformMatrix4f("MVP", mvp); // full transformation for particle system
-	shader.setUniform1f("speed", 0.05);
-
-	vbo.draw(GL_POINTS, 0, positions.size() / 2 - 1); // draw all particles
-
-	shader.setUniform1f("speed", 0.3);
-	vbo.draw(GL_POINTS, positions.size() / 2, positions.size());
-
-	ofPopMatrix();
-
-	particleNode.setPosition(glm::vec3(-0.3, -0.45, 0)); // or whatever -- move particle system here
-
-	ofPushMatrix();
-
-	cam.begin();
-	shader.begin();
-
-	shader.setUniform1f("pSize", 0.02); // particle point size
-	shader.setUniform1f("t", ofGetElapsedTimef()); // time
-
-
-	modelMatrix = particleNode.getGlobalTransformMatrix();
-	viewProjMatrix = cam.getModelViewProjectionMatrix();
-
-	mvp = viewProjMatrix * modelMatrix; // combine camera and ofNode transform
-
-	shader.setUniformMatrix4f("MVP", mvp); // full transformation for particle system
-	shader.setUniform1f("speed", 0.05);
-
-	vbo.draw(GL_POINTS, 0, positions.size() / 2 - 1); // draw all particles
-
-	shader.setUniform1f("speed", 0.3);
-	vbo.draw(GL_POINTS, positions.size() / 2, positions.size());
-
-	ofPopMatrix();
-
-	particleNode.setPosition(glm::vec3(0.3, -0.6, 0)); // or whatever -- move particle system here
-
-	ofPushMatrix();
-
-	cam.begin();
-	shader.begin();
-
-	shader.setUniform1f("pSize", 0.02); // particle point size
-	shader.setUniform1f("t", ofGetElapsedTimef()); // time
-
-
-	modelMatrix = particleNode.getGlobalTransformMatrix();
-	viewProjMatrix = cam.getModelViewProjectionMatrix();
-
-	mvp = viewProjMatrix * modelMatrix; // combine camera and ofNode transform
-
-	shader.setUniformMatrix4f("MVP", mvp); // full transformation for particle system
-	shader.setUniform1f("speed", 0.05);
-
-	vbo.draw(GL_POINTS, 0, positions.size() / 2 - 1); // draw all particles
-
-	shader.setUniform1f("speed", 0.3);
-	vbo.draw(GL_POINTS, positions.size() / 2, positions.size());
-	shader.end();
-	cam.end();
-	ofPopMatrix();
-*/
 
 //--------------------------------------------------------------
 void ofApp::draw() {
@@ -457,6 +324,21 @@ void ofApp::draw() {
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key) {
 	dialogue.keyPressed(key);
+
+	// Mouse lock toggle using 'L' key
+	if (key == ofKey('l') || key == ofKey('l')) {
+		printf("Toggling Mouse Lock\n");
+		mouseLocked = !mouseLocked;
+
+		if (mouseLocked) {
+			glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+			ofHideCursor();
+		}
+		else {
+			glfwSetInputMode(glfwWindow, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+			ofShowCursor();
+		}
+	}
 }
 
 //--------------------------------------------------------------
@@ -466,14 +348,27 @@ void ofApp::keyReleased(int key) {
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y) {
-	glm::vec2 relative = glm::vec2(x, y) - mousePosition;
+	// Center of screen coordinates
+	float centerX = ofGetWidth() / 2.;
+	float centerY = ofGetHeight() / 2.;
+	glm::vec2 center = glm::vec2(centerX, centerY);
+
+	glm::vec2 relative = glm::vec2(x, y) - center;
 	float length = sqrt(pow(relative.x, 2) + pow(relative.y, 2));
-	if (length > 100) {
-		relative = glm::vec2(0, 0);
-	}
+
+	// Testing for Interpolation; delete fast
+	// glm::vec2 lerp = glm::lerp(glm::vec2(0, 0), relative, 0.2f);
+	// Lerp between relative and center
+	// relativeVec.getInterpolated(center, 0.5);
 	//printf("Polling Mouse Movements: \n X: %.2f Y: %.2f LENGTH: %.2f\n", relative.x, relative.y, length);
+	
 	mousePosition = glm::vec2(x,y);
 	cam.camRotate(relative);
+
+	// Mouse Lock Update (Move camera to center if locked)
+	if (mouseLocked && glfwWindow) {
+		glfwSetCursorPos(glfwWindow, centerX, centerY);
+	}
 }
 
 //--------------------------------------------------------------

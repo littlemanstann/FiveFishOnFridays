@@ -7,6 +7,7 @@
 #include "MyCustomCamera.h"
 #include "Player.h"
 #include "DialogueBox.h"
+#include "GLFW/glfw3.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -94,4 +95,10 @@ public:
 	vector<glm::vec3> posOfInteractableObjs;
 	vector<vector<string>> msgsOfInteractableObjs;
 	DialogueBox dialogue;
+
+	// Mouse Lock FPS camera
+	// Variables for mouse lock
+	bool mouseLocked;
+	int lastMouseX, lastMouseY;
+	GLFWwindow* glfwWindow;
 };
