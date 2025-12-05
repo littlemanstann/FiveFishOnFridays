@@ -137,6 +137,8 @@ void ofApp::setup() {
 
 	// Setup water droplets
 	waterDroplets.push_back(WaterDroplet(20.0f, glm::vec3(0., 10., 0.)));
+	waterDroplets.push_back(WaterDroplet(15.0f, glm::vec3(50., 15., -30.)));
+	waterDroplets.push_back(WaterDroplet(30.0f, glm::vec3(-50., 20., 70.)));
 }
 
 glm::vec3 ofApp::sphere_sample()
@@ -205,13 +207,19 @@ void ofApp::update() {
 			}
 		}
 			
-
 		//cam.isTalking = true;
 	}
 
 	if (emitter) emitter->update(SIXTY_FPS);
 	// Set playerPos to be the object in third-person view
 	playerPos = cam.getPosition() + ((cam.getqForward() * 10) + glm::vec3(0, 1, 0) * -3);
+
+	// Update collision with water droplets
+	cam.setGravity(true); // Reset gravity each frame
+	for (auto& droplet : waterDroplets) {
+		if (droplet.isColliding(cam.getPlayerPosition()))
+			cam.setGravity(false);
+	}
 
 	/// PLAYER ANIMATION UPDATE
 	player->update(30);
