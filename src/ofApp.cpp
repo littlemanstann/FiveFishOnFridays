@@ -41,6 +41,10 @@ void ofApp::setup() {
 	//ofLoadImage(mTex, "earth.jpg");
 	/*generateMipmap();
 	mTex.setTextureMinMagFilter(GL_LINEAR_MIPMAP_LINEAR, GL_NEAREST);*/
+	skybox1.set(500);
+	skybox1.setPosition(0,0,0);
+	skybox2.set(500);
+	skybox2.setPosition(505,0,0);
 
 	//PLAYER
 	//cone.set(1, 3);
@@ -242,7 +246,11 @@ void ofApp::draw() {
 	myLight.enable();
 	
 	ofEnableDepthTest();
-
+	
+	ofSetColor(0, 200, 220);
+	skybox1.draw();
+	ofSetColor(50, 50, 255);
+	skybox2.draw();
 
 	ofSetColor(255);
 

@@ -42,6 +42,9 @@ public:
 	ofConePrimitive cone2;
 	ofBoxPrimitive box1;
 
+	ofBoxPrimitive skybox1; // greenery
+	ofBoxPrimitive skybox2; // earthy/rocks
+
 	glm::vec3 sphere_sample();
 	glm::vec3 circle_sample();
 
