@@ -246,11 +246,6 @@ void ofApp::draw() {
 	myLight.enable();
 	
 	ofEnableDepthTest();
-	
-	ofSetColor(0, 200, 220);
-	skybox1.draw();
-	ofSetColor(50, 50, 255);
-	skybox2.draw();
 
 	ofSetColor(255);
 
@@ -263,6 +258,12 @@ void ofApp::draw() {
 	
 	//-------------------------------------------------------------
 	//Environment, while coding the movement I needed a simple ground plane
+
+	//Skybox (incomplete)
+	ofSetColor(0, 200, 220);
+	skybox1.draw();
+	ofSetColor(50, 50, 255);
+	skybox2.draw();
 
 	//Floor
 	ofPushMatrix();
@@ -291,6 +292,10 @@ void ofApp::draw() {
 		ofDrawCone(0.6 - i * 0.1, 1);
 		ofPopMatrix();
 	}
+
+	//Amoebas
+	Beacon blob = Beacon(1, glm::vec3(50, 50, 50), 12.0f, 9.0f, 7.0f, 40, 30, 1);
+	blob.draw();
 
 	///-----END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT-----
 	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space

@@ -4,9 +4,9 @@
 #include "ofMain.h"
 #include "MyCustomCamera.h"
 #include "BubbleEmitter.h"
-#include "MyCustomCamera.h"
 #include "Player.h"
 #include "DialogueBox.h"
+#include "Beacon.h"
 #include "GLFW/glfw3.h"
 
 #define PLAYER_RADIUS 1
@@ -35,7 +35,6 @@ public:
 	void gotMessage(ofMessage msg);
 
 	ofBoxPrimitive box;
-
 
 	ofConePrimitive cone1;
 	ofBoxPrimitive box2;
