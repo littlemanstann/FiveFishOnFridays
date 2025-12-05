@@ -137,8 +137,8 @@ void ofApp::setup() {
 
 	// SETUP: water droplets
 	waterDroplets.push_back(WaterDroplet(50.0f, glm::vec3(0., 10., 0.)));
-	waterDroplets.push_back(WaterDroplet(30.0f, glm::vec3(50., 15., -30.)));
-	waterDroplets.push_back(WaterDroplet(40.0f, glm::vec3(-50., 20., 70.)));
+	waterDroplets.push_back(WaterDroplet(35.0f, glm::vec3(60., 15., -35.)));
+	waterDroplets.push_back(WaterDroplet(40.0f, glm::vec3(-70., 20., 70.)));
 }
 
 glm::vec3 ofApp::sphere_sample()

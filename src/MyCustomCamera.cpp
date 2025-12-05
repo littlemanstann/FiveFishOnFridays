@@ -45,6 +45,9 @@ void MyCustomCamera::update(float deltaTime) {
 	// GRAVITY CHECK:
 	if (applyGravity) {
 		gravityVel.y += GRAVITY * deltaTime;
+	} else if (gravityVel.y < 0) {
+		// Gradually reset gravity velocity to 0 when not applying gravity
+		gravityVel.y -= GRAVITY * 1.1f * deltaTime;
 	}
 
 	//Look at VFX Code
@@ -220,7 +223,4 @@ void MyCustomCamera::addAcceleration(float force) {
 
 void MyCustomCamera::setGravity(bool gravity) {
 	applyGravity = gravity;
-	if (!applyGravity) {
-		gravityVel = glm::vec3(0, 0, 0);
-	}
 }
