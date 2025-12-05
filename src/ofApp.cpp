@@ -134,6 +134,9 @@ void ofApp::setup() {
 		glfwWindow = win->getGLFWWindow();
 	}
 	mouseLocked = false;
+
+	// Setup water droplets
+	waterDroplets.push_back(WaterDroplet(20.0f, glm::vec3(0., 10., 0.)));
 }
 
 glm::vec3 ofApp::sphere_sample()
@@ -280,7 +283,7 @@ void ofApp::draw() {
 	ofDrawCylinder(15, 60);
 	ofPopMatrix();
 
-	//Cone you can talk to
+	// Cone you can talk to
 	cone1.drawFaces();
 
 	for (int i = 0; i < 5; i++) {
@@ -296,6 +299,11 @@ void ofApp::draw() {
 	//Amoebas
 	Beacon blob = Beacon(1, glm::vec3(50, 50, 50), 12.0f, 9.0f, 7.0f, 40, 30, 1);
 	blob.draw();
+
+	// Draw water droplets
+	for (auto& droplet : waterDroplets) {
+		droplet.draw();
+	}
 
 	///-----END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT-----
 	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space

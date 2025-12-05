@@ -8,6 +8,7 @@
 #include "DialogueBox.h"
 #include "Beacon.h"
 #include "GLFW/glfw3.h"
+#include "WaterDroplet.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -103,4 +104,7 @@ public:
 	bool mouseLocked;
 	int lastMouseX, lastMouseY;
 	GLFWwindow* glfwWindow;
+
+	// World Water Droplets
+	vector<WaterDroplet> waterDroplets;
 };
