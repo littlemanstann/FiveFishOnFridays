@@ -135,10 +135,10 @@ void ofApp::setup() {
 	}
 	mouseLocked = false;
 
-	// Setup water droplets
-	waterDroplets.push_back(WaterDroplet(20.0f, glm::vec3(0., 10., 0.)));
-	waterDroplets.push_back(WaterDroplet(15.0f, glm::vec3(50., 15., -30.)));
-	waterDroplets.push_back(WaterDroplet(30.0f, glm::vec3(-50., 20., 70.)));
+	// SETUP: water droplets
+	waterDroplets.push_back(WaterDroplet(50.0f, glm::vec3(0., 10., 0.)));
+	waterDroplets.push_back(WaterDroplet(30.0f, glm::vec3(50., 15., -30.)));
+	waterDroplets.push_back(WaterDroplet(40.0f, glm::vec3(-50., 20., 70.)));
 }
 
 glm::vec3 ofApp::sphere_sample()
@@ -216,6 +216,7 @@ void ofApp::update() {
 
 	// Update collision with water droplets
 	cam.setGravity(true); // Reset gravity each frame
+
 	for (auto& droplet : waterDroplets) {
 		if (droplet.isColliding(cam.getPlayerPosition()))
 			cam.setGravity(false);

@@ -36,7 +36,7 @@ public:
 	void betterLookAt(glm::vec3 target);
 
 	// Enable/Disable gravity effect on camera
-	void setGravity(bool gravity) { applyGravity = gravity; }
+	void setGravity(bool gravity);
 	
 
 private:
@@ -77,6 +77,5 @@ private:
 	// GRAVITY CODE:
 	glm::vec3 gravityVel;
 	float GRAVITY = -9.8f;
-	bool applyGravity = true;
-	
+	bool applyGravity = false;
 };

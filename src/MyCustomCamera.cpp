@@ -217,3 +217,10 @@ glm::vec3 MyCustomCamera::getqUp() {
 void MyCustomCamera::addAcceleration(float force) {
 	move += getqForward() * force;
 }
+
+void MyCustomCamera::setGravity(bool gravity) {
+	applyGravity = gravity;
+	if (!applyGravity) {
+		gravityVel = glm::vec3(0, 0, 0);
+	}
+}
