@@ -5,6 +5,7 @@ in vec2 uv0;
 // Passed from outside
 uniform float timer;
 uniform sampler2D tex0;
+uniform sampler2D tex1;
 uniform float dashIntensity; // 0.0 to 1.0, animate this when dashing
 
 out vec4 fragColor;
@@ -83,6 +84,18 @@ void main()
     whiteness += streakIntensity * dashIntensity * 0.8;
     
     color.rgb += vec3(whiteness);
+    //Speed Shader End
+
+
+    //Depth Shader Begin
+	vec4 depth;
+	depth = texture(tex1,uv0);
+
+	vec3 fadeColour = vec3(0.24, 0.37, 0.56);
+	color.rgb = vec3( fadeColour * (1 - depth.r) + color.rgb * (depth.r));
+    //Depth Shader End
     
+    //Output the Color
     fragColor = color;
+    
 }

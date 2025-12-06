@@ -15,7 +15,7 @@ public:
 
     void update(float dt);
     void draw();
-
+	ofBoxPrimitive getBox() { return box; }
     void setPosition(const glm::vec3& pos) { position = pos; box.move(pos); }
     void setSize(float s) { cubeSize = s; }
 

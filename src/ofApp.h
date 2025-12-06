@@ -18,10 +18,11 @@
 class ofApp : public ofBaseApp {
 
 public:
+	//Default Functions
 	void setup();
 	void update();
 	void draw();
-
+	void renderScene(ofShader * myShader, ofFbo * myFbo);
 	void keyPressed(int key);
 	void keyReleased(int key);
 	void mouseMoved(int x, int y);
@@ -34,73 +35,75 @@ public:
 	void dragEvent(ofDragInfo dragInfo);
 	void gotMessage(ofMessage msg);
 
-	ofBoxPrimitive box;
 
-	ofConePrimitive cone1;
-	ofBoxPrimitive box2;
-	ofConePrimitive cone2;
-	ofBoxPrimitive box1;
-
-	ofBoxPrimitive skybox1; // greenery
-	ofBoxPrimitive skybox2; // earthy/rocks
-
+	//Custom Functions
 	glm::vec3 sphere_sample();
 	glm::vec3 circle_sample();
-
-	int asteroids;
-	float health = PLAYER_MAX_HP;
-	// Variable to show winscreen or not
-	bool gameWon = false;
-	bool gameLost = false;
-	int enemyActivation;
-
-	// Variable for third-person camera player position
-	glm::vec3 playerPos;
-
-
-	ofNode body[500];
-
-	// Set up font
-	ofTrueTypeFont msgFont;
-	ofTrueTypeFont calibri;
-
-	ofTexture mTex;
-
-	MyCustomCamera cam;
-
-	float size = 1.0f;
-	const float MAX_SIZE = 2.0f;
-	const float MIN_SIZE = 0.5f;
-
-	ofLight myLight;
-
-	ofxAssimpModelLoader modelPlayer;
-
-	ofxAssimpModelLoader modelFox;
-
-	Player * player;
-
-	glm::vec2 mousePosition;
-
-	std::unique_ptr<BubbleEmitter> emitter;
-
 	void makeScreenQuad();
 
 
-	ofFbo fbo;          // framebuffer for first pass
-	ofShader speedShader;    // postprocessing shader
+	//*3D Objects
+	ofConePrimitive NPC1;
+	MyCustomCamera cam;
+	
+	ofPlanePrimitive groundModel;
+	ofTexture groundTexture;
+
+	//Player Information
+	Player * player;
+	glm::vec3 playerPos;
+
+
+	//Mouse Positions
+	glm::vec2 mousePosition;
+	bool mouseLocked;
+	int lastMouseX, lastMouseY;
+	GLFWwindow * glfwWindow;
+
+	
+
+	// [Shaders] 
+	ofShader shader;
+	ofShader shaderDepth;
+	ofShader shaderFBO;
+	ofShader speedShader;
+
+	// [Shader Variables]
+	int lines = 1;
+	int masking = 1;
+
+	// [FBO's]
+	ofFbo fboLighting;
+	ofFbo fboLDepth;
 	ofMesh quad;
 
-	//For the dialogue system
+	// [Light Information]
+	ofVec3f lightPos;
+	ofVec3f lightPosViewSpace;
 
+
+	// [Particles and Emitters]
+	std::unique_ptr<BubbleEmitter> particleEmitter;
+	vector<glm::vec3> particlePositions;
+	vector<glm::vec3> particleNormals;
+	ofShader particleShader;
+	ofNode particleNode; // ofNode for using oF transform functions; will apply the node's transform to the particle system
+	ofVbo particleVbo; // vertex buffer object to store all the particle data
+	int numParticles = 2000;
+
+	// [Fonts]
+	ofTrueTypeFont msgFont;
+	ofTrueTypeFont calibri;
+	ofTexture mTex;
+
+
+	// [Dialogue System]
 	//Make sure that the indexes are same for pos and msgs. i.e fish one's pos is at the same index as fish one's msgs
 	vector<glm::vec3> posOfInteractableObjs;
 	vector<vector<string>> msgsOfInteractableObjs;
 	DialogueBox dialogue;
 
-	// Mouse Lock FPS camera
-	// Variables for mouse lock
-	bool mouseLocked;
-	int lastMouseX, lastMouseY;
-	GLFWwindow* glfwWindow;
+	float t;
+
+
 };

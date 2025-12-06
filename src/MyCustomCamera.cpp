@@ -6,8 +6,6 @@
 
 
 MyCustomCamera::MyCustomCamera() {
-    movementSpeed = 0.5f; // units per second
-    rotationSpeed = 0.3f;   // rads per second
     position = glm::vec3(0, 0, 0);
 	targetPosition = glm::vec3(0, 0, 0);
     orientation = glm::quat(1, 0, 0, 0); // nothing
@@ -27,15 +25,17 @@ MyCustomCamera::MyCustomCamera() {
 
 	myPlayer.load("models/FISH.glb");
 	myPlayer.enableNormals();
-	float scale = 0.02;
-	myPlayer.setScale(scale, -scale, -scale); //Player Model Scale
+
+	ofDisableArbTex();
+	ofLoadImage(texture, "textures/fishTexture.png");
+	texture.generateMipmap();
 	
 }
 
 void MyCustomCamera::update(float deltaTime) {
-
+	
 	if (isTalking) {
-
+		printf("isTalking");
 		return;
 	}
     if (!canMoveFlag) {
@@ -53,8 +53,6 @@ void MyCustomCamera::update(float deltaTime) {
         position = glm::vec3(100, 100, -205);
         betterLookAt(glm::vec3(100, 100, -200));
     }
-
-
 
 	//Dash Code, when moving you can dash
 	if (ofGetKeyPressed('r') && dash == false) {
@@ -131,16 +129,27 @@ void MyCustomCamera::update(float deltaTime) {
 	pitch(-xRotation * DEG_TO_RAD); //rotate back
 }
 
-void MyCustomCamera::drawMe() {
+void MyCustomCamera::drawMeShaded() {
+	//you would have to pass a pointer to the shader to do this...
+	for (int i = 0; i < myPlayer.getNumMeshes(); i++) {
+		texture.bind();
+		myPlayer.getMesh(i).draw();
+		texture.unbind();
+	}
+}
+glm::mat4 MyCustomCamera::getMyGlobalTransformMatrix() {
+	// 3. GLM QUIRK if you rotate an object back and forth, after enough updates the
+	// Rotation will be different than when you started because of tiny rounding errors!
+	// When talking to npcs, the fish would rotate slightly over time
 
-	//3. GLM Quirk, assimpModelLoader doesn't have setOrientation
-	// we must push a matrix of an ofNodePrimitive to rotate the fish model
+	//myCone.rotateDeg(180, getqUp());
+	//glm::mat4 transformMatrix = myCone.getGlobalTransformMatrix();
+	//myCone.rotateDeg(-180, getqUp());
 
-	ofPushMatrix();
-	ofMultMatrix(myCone.getGlobalTransformMatrix());
-	myPlayer.drawFaces();
-	ofPopMatrix();
+	ofConePrimitive tempCone = myCone;
+	tempCone.rotateDeg(180, getqUp());
 
+	return tempCone.getGlobalTransformMatrix();
 }
 
 void MyCustomCamera::betterLookAt(const glm::vec3 target)
@@ -165,15 +174,11 @@ void MyCustomCamera::camRotate(glm::vec2 mouseInput) {
 
 }
 
-// TODO: getqForward, getqSide, getqUp;
-// TODO: pitch, yaw, roll
-
 void MyCustomCamera::pitch(float amt) {
     glm::quat change = glm::angleAxis(amt, glm::vec3(1, 0, 0));
 	orientation = orientation * change;
 
 }
-
 
 void MyCustomCamera::yaw(float amt) {
     glm::vec3 silly = glm::vec3(0, 1, 0);
@@ -182,7 +187,6 @@ void MyCustomCamera::yaw(float amt) {
 
 }
 
-
 void MyCustomCamera::roll(float amt) {
     glm::vec3 silly = glm::vec3(0, 0, 1);
     glm::quat change = glm::angleAxis(amt, silly);
@@ -190,20 +194,14 @@ void MyCustomCamera::roll(float amt) {
 }
 
 glm::vec3 MyCustomCamera::getqForward() {
-
-
     return orientation * BASE_FORWARD; // because we look down -z axis
 }
 
-
 glm::vec3 MyCustomCamera::getqSide() {
-
     return orientation * BASE_SIDE;
 }
 
-
 glm::vec3 MyCustomCamera::getqUp() {
-
     return orientation * BASE_UP;
 }
 

@@ -8,40 +8,33 @@ public:
     MyCustomCamera();
 
     void update(float deltaTime);
-	void drawMe();
+	void drawMeShaded();
 	void camRotate(glm::vec2 mouseInput);
 
-
+	glm::mat4 getMyGlobalTransformMatrix();
 	glm::vec3 getPlayerPosition() { return myCone.getPosition(); }
-	
+	float getSpeed() const { return glm::length(move); }
 
     glm::vec3 getqForward();
     glm::vec3 getqSide();
     glm::vec3 getqUp();
-
 
     void pitch(float a);
     void roll(float a);
     void yaw(float a);
 
 	void addAcceleration(float force);
-	float getSpeed() const { return glm::length(move); }
-
-    // Dictates if the player can move or not
     void canMove(bool move) { canMoveFlag = move; }
-	bool dash = false;
-	bool isTalking = false;
-	float interactRange = 5.0f;
-	ofConePrimitive myCone;
 	void betterLookAt(glm::vec3 target);
 
-	
+	ofConePrimitive myCone;
+	float interactRange = 5.0f;
+	bool dash = false;
+	bool isTalking = false;
 
 private:
-    float movementSpeed;
-    float rotationSpeed;
-    glm::vec3 position;
-    glm::quat orientation;
+	ofxAssimpModelLoader myPlayer;
+	ofTexture texture;
 
     glm::vec3 BASE_UP;
     glm::vec3 BASE_SIDE;
@@ -49,27 +42,22 @@ private:
 	glm::vec3 BASE_DOWN;
 
     glm::vec3 move;
-	bool canMoveFlag = true;
-
-    
-
-
-	float MAX_SPEED = 100;//reccomended to not change max speed
-	float DASH_MULT = 1.0;//and change dash/movemult
-	float MOVE_MULT = 0.3;//as these don't affect graphs
-	float DASH_MOVE_SMOOTHING = 19.6;
-	float speed = 0;
-	float speedModifier = 0;
-	float mouseSensitivity = 0.003;
-	
-	
-	float timeDashBegin = 0.0;
+	glm::vec3 position;
+	glm::quat orientation;
 
 	glm::vec3 targetPosition;
 	glm::vec3 cameraOffset;
-	float xRotation = -15;
+	
+	float speed = 0;
+	float speedModifier = 0;
+	float timeDashBegin = 0.0;
+	float mouseSensitivity = 0.003;
 
+	const float MAX_SPEED = 100;//reccomended to not change max speed
+	const float DASH_MULT = 1.0;//and change dash/movemult
+	const float MOVE_MULT = 0.3;//as these don't affect graphs
+	const float DASH_MOVE_SMOOTHING = 19.6;
+	const float xRotation = -15;
 	
-	ofxAssimpModelLoader myPlayer;
-	
+	bool canMoveFlag = true;
 };

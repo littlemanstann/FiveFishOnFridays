@@ -52,7 +52,7 @@ void BubbleEmitter::update(float dt) {
 
 void BubbleEmitter::draw() {
     box.draw();
-    //ofMatrix4x4 modelMatrix = box.getGlobalTransformMatrix();
+    ofMatrix4x4 modelMatrix = box.getGlobalTransformMatrix();
     ofMatrix4x4 viewMatrix = cam.getModelViewProjectionMatrix();
     ofMatrix4x4 mvp = viewMatrix;
 
