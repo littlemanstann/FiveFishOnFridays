@@ -106,6 +106,7 @@ public:
 
 	// [Dialogue System]
 	//Make sure that the indexes are same for pos and msgs. i.e fish one's pos is at the same index as fish one's msgs
+	
 	vector<glm::vec3> posOfInteractableObjs;
 	vector<vector<string>> msgsOfInteractableObjs;
 	DialogueBox dialogue;

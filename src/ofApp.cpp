@@ -72,6 +72,8 @@ void ofApp::setup() {
 	particleEmitter->setPosition(glm::vec3(0, 0, 0));
 	particleEmitter->setSize(1); // cube size
 
+	
+
 	// ------------------------------------------------------------------------------------------
 }
 
@@ -89,6 +91,7 @@ void ofApp::update() {
 	dialogue.update();
 	if (!dialogue.isActive()) {
 		cam.isTalking = false;
+		
 	}
 
 	if (ofGetKeyPressed('e') && cam.isTalking == false) {

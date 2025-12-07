@@ -17,6 +17,11 @@ void DialogueBox::setup(float x, float y, float width, float height) {
     this->y = y;
     this->width = width;
     this->height = height;
+
+    //Setup SFXs
+    animalCrossingSFX.load("sounds/AC_SFX_Loopable.wav");
+    animalCrossingSFX.setLoop(true);
+    animalCrossingSFX.setVolume(0.8);
 }
 
 void DialogueBox::update() {
@@ -24,6 +29,8 @@ void DialogueBox::update() {
 
     // Animate text character by character
     if (!textComplete && currentMessageIndex < messages.size()) {
+        if(!animalCrossingSFX.isPlaying()) animalCrossingSFX.play();
+        
         float currentTime = ofGetElapsedTimef();
 
         if (currentTime - lastCharTime >= charDelay) {
@@ -36,6 +43,9 @@ void DialogueBox::update() {
                 textComplete = true;
             }
         }
+    }
+    else {
+        animalCrossingSFX.stop();
     }
 }
 
@@ -82,6 +92,7 @@ void DialogueBox::keyPressed(int key) {
     // If this is the last message and text is complete, close dialogue
     else if (currentMessageIndex == messages.size() - 1 && textComplete) {
         dialogueActive = false;
+        animalCrossingSFX.stop();
     }
 }
 
@@ -91,12 +102,14 @@ void DialogueBox::advanceToNextMessage() {
     displayedText = "";
     textComplete = false;
     lastCharTime = ofGetElapsedTimef();
+    animalCrossingSFX.play();
 }
 
 void DialogueBox::finishCurrentMessage() {
     displayedText = messages[currentMessageIndex];
     charIndex = messages[currentMessageIndex].length();
     textComplete = true;
+    animalCrossingSFX.stop();
 }
 
 bool DialogueBox::isActive() {

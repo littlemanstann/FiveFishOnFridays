@@ -33,6 +33,9 @@ private:
     float textPadding;
     float lineHeight;
 
+    // SFX
+    ofSoundPlayer animalCrossingSFX;
+
     void advanceToNextMessage();
     void finishCurrentMessage();
 };
