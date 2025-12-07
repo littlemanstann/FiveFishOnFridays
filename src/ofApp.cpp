@@ -36,6 +36,7 @@ void ofApp::setup() {
 		glfwWindow = win->getGLFWWindow();
 	}
 
+	bubble1.set(BUBBLE_RADIUS, 100);
 
 	//Setup a primitive with a texture (example)
 	groundModel.set(1200, 1200);
@@ -45,6 +46,14 @@ void ofApp::setup() {
 	ofLoadImage(groundTexture, "textures/sand.jpg");
 	groundTexture.generateMipmap();
 
+	skyboxModel.load("models/skybox.glb");
+	skyboxModel.enableNormals();
+	skyboxModel.setScale(20, -20, -20);
+	ofDisableArbTex();
+	ofLoadImage(skyboxTexture, "textures/skyboxClouds.png");
+	skyboxTexture.generateMipmap();
+
+	ofLoadImage(blankTexture, "textures/blank.png");
 
 	//Setup Interactable NPC
 	NPC1.set(1, 2);
@@ -96,6 +105,7 @@ void ofApp::update() {
 
 	if (particleEmitter) particleEmitter->update(ofGetLastFrameTime());
 
+	skyboxModel.setPosition(cam.getPlayerPosition().x, cam.getPlayerPosition().y, cam.getPlayerPosition().z);
 
 }
 
@@ -111,10 +121,21 @@ void ofApp::draw() {
 	ofDisableDepthTest();
 
 	// ---------- Second pass: Draw the scene with an additional shader if you are dashing --==========
+
+
+	//when you exit the shpere you should be able to see clearly so we switch the depth texture to blank
+	ofTexture tempShaderTexture;
+	if (glm::length(cam.getPlayerPosition()) > BUBBLE_RADIUS) { 
+		tempShaderTexture = blankTexture;
+	} else {
+		tempShaderTexture = fboLDepth.getTexture();
+	}
+
+	//dashing shader
 	if (cam.dash) {
 		speedShader.begin();
 		speedShader.setUniformTexture("tex0", fboLighting.getTexture(), 0);
-		speedShader.setUniformTexture("tex1", fboLDepth.getTexture(), 1);
+		speedShader.setUniformTexture("tex1", tempShaderTexture, 1);
 		speedShader.setUniform1f("timer", ofGetElapsedTimef());
 		speedShader.setUniform1f("dashIntensity", 0.1);
 		quad.draw();
@@ -122,7 +143,9 @@ void ofApp::draw() {
 	} else {
 		shaderFBO.begin();
 		shaderFBO.setUniformTexture("tex0", fboLighting.getTexture(), 0);
-		shaderFBO.setUniformTexture("tex1", fboLDepth.getTexture(), 1);
+		shaderFBO.setUniformTexture("tex1", tempShaderTexture, 1);
+
+		
 		quad.draw();
 		shaderFBO.end();
 	}
@@ -149,6 +172,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("viewPos", cam.getPosition());
 	myShader->setUniform3f("lightColor", glm::vec3(1, 1, 1));
 	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
 
 	//Draw Player
 	myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
@@ -161,12 +185,27 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform1i("texBool", 0);
 	NPC1.draw();
 
+	myShader->setUniformMatrix4f("worldMatrix", bubble1.getGlobalTransformMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.24, 0.37, 0.56));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 1);
+	bubble1.draw();
+
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
 	myShader->setUniformMatrix4f("worldMatrix", groundModel.getGlobalTransformMatrix());
 	myShader->setUniform1i("texBool", 1);
+	myShader->setUniform1i("brightBool", 0);
 	groundTexture.bind();
 	groundModel.draw();
 	groundTexture.unbind();
+
+	myShader->setUniformMatrix4f("worldMatrix", skyboxModel.getModelMatrix());
+	myShader->setUniform1i("texBool", 1);
+	myShader->setUniform1i("brightBool", 1);
+	skyboxTexture.bind();
+	skyboxModel.getMesh(0).draw();
+	skyboxTexture.unbind();
+
 
 	//Draw Bubble Shader
 	myShader->setUniformMatrix4f("worldMatrix", particleEmitter->getBox().getGlobalTransformMatrix());

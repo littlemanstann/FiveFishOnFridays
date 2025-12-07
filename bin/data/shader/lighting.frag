@@ -6,6 +6,7 @@ in vec2 TexCoord;
 
 uniform sampler2D tex0;
 uniform int texBool;
+uniform int brightBool;
 uniform vec2 resolution;
 uniform vec3 lightPos;
 uniform vec3 viewPos;
@@ -38,11 +39,14 @@ void main()
     float specular = specularStrength * spec;
 
 	vec3 result = vec3(0.,0.,0.);
+
+
     if(texBool == 1){
-        result = (ambient + diffuse + specular) * texture(tex0, TexCoord).rgb;
+        result = max((ambient + diffuse + specular), brightBool) * texture(tex0, TexCoord).rgb;
     }else{
-        result = (ambient + diffuse + specular) * objectColor;
+        result = max((ambient + diffuse + specular), brightBool) * objectColor;
     }
+	result = min(result, 1.0);
     fragColor = vec4(result.rgb, 1.0);
 /*
 if (FragPos.x > 0) fragColor = vec4(1,0,0,1);
