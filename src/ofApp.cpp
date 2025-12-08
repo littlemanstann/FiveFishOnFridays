@@ -72,6 +72,29 @@ void ofApp::setup() {
 	particleEmitter->setPosition(glm::vec3(0, 0, 0));
 	particleEmitter->setSize(1); // cube size
 
+	// Setup voronoi mesh
+
+	for (int i = 0; i < NUM_POINTS; i++) {
+		std::unique_ptr<Point> p;
+
+		p = std::make_unique<ThreeDPoint>();
+
+
+
+		p->setup(1, ofColor::fromHsb(ofRandom(255), 200, 255));
+
+		p->setPosition(ofRandom(-BOUND_X, BOUND_X), ofRandom(-BOUND_Y, BOUND_Y), ofRandom(-BOUND_Z, BOUND_Z));
+		points.push_back(std::move(p));
+
+	}
+
+	findIntersectingPlanes();
+
+	for (auto& p : points) {
+		ThreeDPoint* t = dynamic_cast<ThreeDPoint*>(p.get());
+		t->cylinders = t->createWireframeCylinders(t->vertices);
+	}
+
 	
 
 	// ------------------------------------------------------------------------------------------
@@ -215,6 +238,12 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	particleEmitter->draw();	
+
+	// myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
+	//Draw Voronoi
+	for (auto& p : points) {
+        p->draw(myShader);
+    }
 
 	myShader->end();
 
@@ -366,5 +395,60 @@ void ofApp::makeScreenQuad() {
 	// top-right
 	quad.addVertex(glm::vec3(ofGetWidth(), 0, 0));
 	quad.addTexCoord(glm::vec2(1.0, 1.0));
+}
+
+void ofApp::findIntersectingPlanes() {
+	for (auto& p1 : points) {
+		for (auto& p2 : points) {
+			if (p1 == p2) continue;
+
+			//get the equation of the bisecting plane given the normal and a point on that plane.
+			glm::vec3 P1P2 = p2->position - p1->position;
+			glm::vec3 point = p1->position + P1P2 / 2;
+			glm::vec3 normal = glm::normalize(P1P2);
+			float d = -(normal.x * point.x + normal.y * point.y + normal.z * point.z);
+			glm::vec4 BisectingPlane = glm::vec4(normal.x, normal.y, normal.z, d);
+			//std::cout << "Bisecting plane found between points: " << p1->position << " and " << p2->position << "|| Bisecting plane: " << BisectingPlane << "\n";
+
+			//find if that plane intersects one of the edges.
+			//topologically you cannot intersect one edge of a convex polygon without intersecting the entire polygon. So only need to find one intersection
+			ThreeDPoint* p = dynamic_cast<ThreeDPoint*>(p1.get());
+			vector<std::pair<int, int>> allEdges = choose2(p->vertices.size());
+			for (std::pair<int, int> pair : allEdges) {
+				glm::vec3 edgeDirVector = glm::normalize(p->vertices[pair.second]->position - p->vertices[pair.first]->position);
+
+				//taking the dot product of the plane's normal and the edge's direction vector will determine if this edge is parrallel to the plane.
+				if (glm::dot(edgeDirVector, normal) != 0) {
+					//their dot product is not 0 they intersect at one point.
+					// Need to check if that point is within the bounds of the line segment given by the endpoints vertices[pair first and second]
+
+					float t = -(BisectingPlane.x * p1->position.x + BisectingPlane.y * p1->position.y + BisectingPlane.z * p1->position.z + BisectingPlane.w)
+						/ (BisectingPlane.x * edgeDirVector.x + BisectingPlane.y * edgeDirVector.y + BisectingPlane.z * edgeDirVector.z);
+
+					//If the POI of the line and point is not in the line segment then ignore this pairing
+					float test = glm::length((p->vertices[pair.second]->position - p->vertices[pair.first]->position));
+					if (t < 0 || t > test) {
+						continue;
+					}
+					//otherwise the plane does cut into the polyhedron
+					else {
+						p->vertices = p->cutPolyhedron(BisectingPlane);
+						break;
+					}
+				}
+			}
+		}
+	}
+}
+
+//helper function for selecting all pairs of vertices to form edges
+std::vector<std::pair<int, int>> ofApp::choose2(int n) {
+	std::vector<std::pair<int, int>> pairs;
+	for (int i = 0; i < n; ++i) {
+		for (int j = i + 1; j < n; ++j) {
+			pairs.emplace_back(i, j);
+		}
+	}
+	return pairs;
 }
 

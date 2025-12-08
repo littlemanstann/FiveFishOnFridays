@@ -8,6 +8,7 @@
 #include "DialogueBox.h"
 #include "Beacon.h"
 #include "GLFW/glfw3.h"
+#include "3DPoint.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -15,6 +16,15 @@
 #define PLAYER_ACCELERATION_FORCE 1
 #define POWERUP_BOOST_FORCE 1
 #define BUBBLE_RADIUS 100
+
+// This is the config for the voronoi mesh (Jansen)
+
+#define BOUND_X 800
+#define BOUND_Y 800
+#define BOUND_Z 800
+#define DELTA 1
+#define NUM_POINTS 20
+
 
 class ofApp : public ofBaseApp {
 
@@ -110,6 +120,12 @@ public:
 	vector<glm::vec3> posOfInteractableObjs;
 	vector<vector<string>> msgsOfInteractableObjs;
 	DialogueBox dialogue;
+
+	// [Voronoi Mesh]
+	void findIntersectingPlanes();
+	std::vector<std::pair<int, int>> choose2(int n);
+
+	vector<std::unique_ptr<Point>> points;
 
 	float t;
 
