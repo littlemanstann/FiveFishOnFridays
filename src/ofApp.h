@@ -23,7 +23,7 @@
 #define BOUND_Y 600
 #define BOUND_Z 600
 #define DELTA 1
-#define NUM_POINTS 50
+#define NUM_POINTS 30
 
 
 class ofApp : public ofBaseApp {

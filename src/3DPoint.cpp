@@ -48,7 +48,7 @@ void ThreeDPoint::draw(ofShader* myShader) {
         myShader->setUniform3f("objectColor", glm::vec3(1.0, 1.0, 1.0));
         myShader->setUniform1i("texBool", 0);
 		myShader->setUniform1i("brightBool", 0);
-        c.draw();
+        c.drawFaces();
     }
 
 
@@ -78,7 +78,7 @@ std::vector<ofCylinderPrimitive> ThreeDPoint::createWireframeCylinders(const std
 
                 // Create cylinder
                 ofCylinderPrimitive cylinder;
-                cylinder.set(4, edgeLength, 6, 1);
+                cylinder.set(4, edgeLength, 3, 1);
 
                 // Position at midpoint
                 cylinder.setPosition(midpoint.x, midpoint.y, midpoint.z);
