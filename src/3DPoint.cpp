@@ -78,7 +78,7 @@ std::vector<ofCylinderPrimitive> ThreeDPoint::createWireframeCylinders(const std
 
                 // Create cylinder
                 ofCylinderPrimitive cylinder;
-                cylinder.set(8, edgeLength, 6, 1);
+                cylinder.set(4, edgeLength, 6, 1);
 
                 // Position at midpoint
                 cylinder.setPosition(midpoint.x, midpoint.y, midpoint.z);
