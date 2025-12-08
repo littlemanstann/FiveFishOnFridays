@@ -232,20 +232,19 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	skyboxModel.getMesh(0).draw();
 	skyboxTexture.unbind();
 
+	for (auto & p : points) {
+		p->draw(myShader);
+	}
 
-	//Draw Bubble Shader
+	//Draw Bubble Shader (draw last), it 
 	myShader->setUniformMatrix4f("worldMatrix", particleEmitter->getBox().getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 1);
 	particleEmitter->draw();	
 
-	// myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
-	//Draw Voronoi
-	for (auto& p : points) {
-        p->draw(myShader);
-    }
-
 	myShader->end();
+
 
 
 	cam.end();

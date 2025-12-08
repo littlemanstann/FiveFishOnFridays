@@ -40,13 +40,14 @@ std::vector<Vertex*> ThreeDPoint::createCube() {
 }
 
 void ThreeDPoint::draw(ofShader* myShader) {
-    Point::draw(myShader);
+    //Point::draw(myShader);
 
-    ofSetColor(255);
+    
     for (ofCylinderPrimitive c : cylinders) {
         myShader->setUniformMatrix4f("worldMatrix", c.getGlobalTransformMatrix());
-        myShader->setUniform3f("objectColor", glm::vec3(1));
+        myShader->setUniform3f("objectColor", glm::vec3(1.0, 1.0, 1.0));
         myShader->setUniform1i("texBool", 0);
+		myShader->setUniform1i("brightBool", 0);
         c.draw();
     }
 
