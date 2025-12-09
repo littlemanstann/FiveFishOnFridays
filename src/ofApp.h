@@ -9,6 +9,7 @@
 #include "Beacon.h"
 #include "GLFW/glfw3.h"
 #include "3DPoint.h"
+#include "WaterDroplet.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -129,5 +130,6 @@ public:
 
 	float t;
 
-
+	// World Water Droplets
+	vector<WaterDroplet> waterDroplets;
 };

@@ -95,9 +95,10 @@ void ofApp::setup() {
 		t->cylinders = t->createWireframeCylinders(t->vertices);
 	}
 
-	
-
-	// ------------------------------------------------------------------------------------------
+	// SETUP: water droplets
+	waterDroplets.push_back(WaterDroplet(50.0f, glm::vec3(0., 10., 0.)));
+	waterDroplets.push_back(WaterDroplet(35.0f, glm::vec3(60., 15., -35.)));
+	waterDroplets.push_back(WaterDroplet(40.0f, glm::vec3(-70., 20., 70.)));
 }
 
 //--------------------------------------------------------------
@@ -132,6 +133,14 @@ void ofApp::update() {
 	if (particleEmitter) particleEmitter->update(ofGetLastFrameTime());
 
 	skyboxModel.setPosition(cam.getPlayerPosition().x, cam.getPlayerPosition().y, cam.getPlayerPosition().z);
+
+	/// Update collision with water droplets
+	cam.setGravity(true); // Reset gravity each frame
+
+	for (auto& droplet : waterDroplets) {
+		if (droplet.isColliding(cam.getPlayerPosition()))
+			cam.setGravity(false);
+	}
 
 }
 
@@ -245,7 +254,10 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 
 	myShader->end();
 
-
+	// Draw World Water Droplets
+	for (auto& droplet : waterDroplets) {
+		droplet.draw();
+	}
 
 	cam.end();
 
