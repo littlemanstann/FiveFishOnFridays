@@ -98,81 +98,6 @@ void ofApp::setup() {
 	
 
 	// ------------------------------------------------------------------------------------------
-
-	//LIGHTING
-	ofEnableSmoothing();
-	ofSetGlobalAmbientColor(ofColor(155, 155, 155));
-	ofSetSmoothLighting(true); //no documentation
-	ofSetSphereResolution(100);
-	ofEnableLighting(); // use lighting calculations
-	myLight.setPointLight(); // it is a point light
-
-
-	calibri.load("calibri.ttf", 32, true, true);
-	calibri.setLineHeight(18.0f);
-	calibri.setLetterSpacing(1.037);
-
-	// Set up font
-	msgFont.loadFont("trixiepro_heavy.otf", 128);
-
-	makeScreenQuad();
-
-
-	//fbo.getTexture().setTextureWrap(GL_CLAMP_TO_EDGE, GL_CLAMP_TO_EDGE);
-	ofEnableAlphaBlending();
-
-	// Mouse Lock Setup
-	mouseLocked = false; // Start with the mouse unlocked
-	ofShowCursor(); // Ensure the cursor is visible initially
-	// Get the GLFW window pointer
-	ofAppGLFWWindow* win = dynamic_cast<ofAppGLFWWindow*>(ofGetWindowPtr());
-	if (win) {
-		glfwWindow = win->getGLFWWindow();
-	}
-	mouseLocked = false;
-
-	// SETUP: water droplets
-	waterDroplets.push_back(WaterDroplet(50.0f, glm::vec3(0., 10., 0.)));
-	waterDroplets.push_back(WaterDroplet(35.0f, glm::vec3(60., 15., -35.)));
-	waterDroplets.push_back(WaterDroplet(40.0f, glm::vec3(-70., 20., 70.)));
-}
-
-glm::vec3 ofApp::sphere_sample()
-{
-	// random sample from within a sphere
-	glm::vec3 p;
-
-	// use simple rejection sampling
-	do {
-		p = glm::vec3(
-			ofRandom(-1.0f, 1.0f),
-			ofRandom(-1.0f, 1.0f),
-			ofRandom(-1.0f, 1.0f)
-		);
-	} while (glm::length2(p) > 1.0f); // is length^2 > 1? Failed, try again
-
-	// out of the loop, must have found a legal sample
-
-	return p;
-}
-
-glm::vec3 ofApp::circle_sample()
-{
-	// random sample from within a sphere
-	glm::vec3 p;
-
-	// use simple rejection sampling
-	do {
-		p = glm::vec3(
-			ofRandom(-1.0f, 1.0f),
-			0,
-			ofRandom(-1.0f, 1.0f)
-		);
-	} while (glm::length2(p) > 1.0f); // is length^2 > 1? Failed, try again
-
-	// out of the loop, must have found a legal sample
-
-	return p;
 }
 
 //--------------------------------------------------------------
@@ -202,24 +127,12 @@ void ofApp::update() {
 				dialogue.setDialogue(msgsOfInteractableObjs[i]);
 			}
 		}
-			
-		//cam.isTalking = true;
 	}
 
 	if (particleEmitter) particleEmitter->update(ofGetLastFrameTime());
 
 	skyboxModel.setPosition(cam.getPlayerPosition().x, cam.getPlayerPosition().y, cam.getPlayerPosition().z);
 
-	// Update collision with water droplets
-	cam.setGravity(true); // Reset gravity each frame
-
-	for (auto& droplet : waterDroplets) {
-		if (droplet.isColliding(cam.getPlayerPosition()))
-			cam.setGravity(false);
-	}
-
-	/// PLAYER ANIMATION UPDATE
-	player->update(30);
 }
 
 //--------------------------------------------------------------
@@ -245,70 +158,6 @@ void ofApp::draw() {
 	}
 
 	//dashing shader
-	mTex.bind();
-	////modelPlayer.drawFaces();
-	cam.drawMe();
-	player->draw();
-	mTex.unbind(); 
-	
-	//-------------------------------------------------------------
-	//Environment, while coding the movement I needed a simple ground plane
-
-	//Skybox (incomplete)
-	ofSetColor(0, 200, 220);
-	skybox1.draw();
-	ofSetColor(50, 50, 255);
-	skybox2.draw();
-
-	//Floor
-	ofPushMatrix();
-	ofRotateXDeg(90);
-	ofSetColor(42, 50, 59);
-	ofDrawPlane(0, 0, 0, 500, 500);
-	ofPopMatrix();
-
-	//Tree Simple
-	glm::vec3 treePos(200, 0, -180);
-	ofPushMatrix();
-	ofSetColor(82, 37, 7);
-	ofTranslate(treePos.x, 30, treePos.z);
-	ofDrawCylinder(15, 60);
-	ofPopMatrix();
-
-	// Cone you can talk to
-	cone1.drawFaces();
-
-	for (int i = 0; i < 5; i++) {
-		ofPushMatrix();
-		ofTranslate(treePos.x, (35 + i * 15) * 3, treePos.z);
-		ofRotateX(180);
-		ofScale(100 - i * 6);
-		ofSetColor(18, 115, 44);
-		ofDrawCone(0.6 - i * 0.1, 1);
-		ofPopMatrix();
-	}
-
-	//Amoebas
-	Beacon blob = Beacon(1, glm::vec3(50, 50, 50), 12.0f, 9.0f, 7.0f, 40, 30, 1);
-	blob.draw();
-
-	// Draw water droplets
-	for (auto& droplet : waterDroplets) {
-		droplet.draw();
-	}
-
-	///-----END DRAWING OF 3D OBJECTS, ONLY UI ELEMENTS AND TEXT BEYOND THIS POINT-----
-	ofDisableDepthTest(); //With this disabled, UI (below) no longer gets clipped in 3D space
-	myLight.disable();
-	cam.end();
-	fbo.end();
-
-	
-
-
-
-	// ---------- Second pass: draw FBO with shader --==========
-
 	if (cam.dash) {
 		speedShader.begin();
 		speedShader.setUniformTexture("tex0", fboLighting.getTexture(), 0);
