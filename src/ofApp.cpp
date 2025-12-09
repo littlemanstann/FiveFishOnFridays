@@ -233,7 +233,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	skyboxTexture.unbind();
 
 	for (auto & p : points) {
-		p->draw(myShader);
+		p->draw(myShader, cam.myCone.getGlobalPosition());
 	}
 
 	//Draw Bubble Shader (draw last), it 

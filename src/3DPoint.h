@@ -31,7 +31,7 @@ public:
 class ThreeDPoint : public Point {
 public:
     ThreeDPoint();
-    void draw(ofShader* myShader) override;
+    void draw(ofShader* myShader, glm::vec3 pos) override;
     void update(float deltatime) override;
 
     vector<Vertex*> vertices;
@@ -40,6 +40,7 @@ public:
     std::vector<Vertex*> createCube();
 
     std::vector<ofCylinderPrimitive> createWireframeCylinders(const std::vector<Vertex*>& vertices);
+    bool isPointNearCylinder(const glm::vec3& point, const ofCylinderPrimitive& cylinder, float radius);
 
 
 

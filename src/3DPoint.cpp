@@ -39,20 +39,65 @@ std::vector<Vertex*> ThreeDPoint::createCube() {
     return { v000, v001, v010, v011, v100, v101, v110, v111 };
 }
 
-void ThreeDPoint::draw(ofShader* myShader) {
+void ThreeDPoint::draw(ofShader* myShader, glm::vec3 pos) {
     //Point::draw(myShader);
 
     
     for (ofCylinderPrimitive c : cylinders) {
-        myShader->setUniformMatrix4f("worldMatrix", c.getGlobalTransformMatrix());
-        myShader->setUniform3f("objectColor", glm::vec3(1.0, 1.0, 1.0));
-        myShader->setUniform1i("texBool", 0);
-		myShader->setUniform1i("brightBool", 0);
-        c.drawFaces();
+        if (isPointNearCylinder(pos, c, 400)) {
+            myShader->setUniformMatrix4f("worldMatrix", c.getGlobalTransformMatrix());
+            myShader->setUniform3f("objectColor", glm::vec3(1.0, 1.0, 1.0));
+            myShader->setUniform1i("texBool", 0);
+            myShader->setUniform1i("brightBool", 0);
+            c.drawFaces();
+        }
+
+        
     }
 
 
 
+}
+
+bool ThreeDPoint::isPointNearCylinder(const glm::vec3& point, const ofCylinderPrimitive& cylinder, float radius) {
+
+    // Get cylinder properties
+    glm::vec3 cylPos = cylinder.getGlobalPosition();
+    float cylHeight = cylinder.getHeight();
+
+    // Get the cylinder's orientation (up axis in world space)
+    glm::quat cylOrientation = cylinder.getGlobalOrientation();
+    glm::vec3 cylAxis = cylOrientation * glm::vec3(0, 1, 0);
+
+
+    glm::vec3 A = cylPos + cylAxis * (cylHeight * 0.5f);
+    glm::vec3 B = cylPos - cylAxis * (cylHeight * 0.5f);
+
+    // Vector from bottom to point
+    glm::vec3 APoint = point - A;
+    glm::vec3 AB = B- A;
+
+    // Project point onto cylinder axis
+    float t = (glm::dot(AB, APoint) / glm::dot(AB, AB));   
+
+    float dist;
+
+    if (t < 0.0f) {
+        // Closest to bottom end
+        dist = glm::distance(point, B);
+    }
+    else if (t > 1.0f) {
+        // Closest to top end
+        dist = glm::distance(point, A);
+        
+    }
+    else {
+        // Closest to a point along the cylinder axis
+        glm::vec3 closestPoint = B + t * AB;
+        dist = glm::distance(point, closestPoint);
+    }
+
+    return dist <= radius;
 }
 
 std::vector<ofCylinderPrimitive> ThreeDPoint::createWireframeCylinders(const std::vector<Vertex*>& vertices) {

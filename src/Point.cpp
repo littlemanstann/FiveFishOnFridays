@@ -12,11 +12,11 @@ void Point::setup(float radius, ofColor col) {
 }
 
 
-void Point::draw(ofShader* myShader) {
+void Point::draw(ofShader* myShader, glm::vec3 pos) {
     //ofSetColor(color);
    // sphere.drawWireframe();   // or sphere.draw() for solid
     //ofSetColor(0, 0, 255);
-	printf("i am called \n");
+	//printf("i am called \n");
 }
 
 void Point::setPosition(float x, float y, float z) {
