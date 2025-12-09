@@ -16,7 +16,6 @@
 #define SIXTY_FPS 0.016
 #define PLAYER_ACCELERATION_FORCE 1
 #define POWERUP_BOOST_FORCE 1
-#define BUBBLE_RADIUS 800
 #define GROUND_PLANE -10
 // This is the config for the voronoi mesh (Jansen)
 
@@ -56,7 +55,6 @@ public:
 
 	//*3D Objects
 	ofConePrimitive NPC1;
-	ofSpherePrimitive bubble1;
 	MyCustomCamera cam;
 	ofPlanePrimitive groundModel;
 	ofxAssimpModelLoader skyboxModel;

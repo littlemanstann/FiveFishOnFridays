@@ -36,8 +36,6 @@ void ofApp::setup() {
 		glfwWindow = win->getGLFWWindow();
 	}
 
-	bubble1.set(BUBBLE_RADIUS, 100);
-
 	//Setup a primitive with a texture (example)
 	groundModel.set(1200, 1200);
 	groundModel.setPosition(glm::vec3(0, GROUND_PLANE, 0));
@@ -234,12 +232,6 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	NPC1.draw();
-
-	myShader->setUniformMatrix4f("worldMatrix", bubble1.getGlobalTransformMatrix());
-	myShader->setUniform3f("objectColor", glm::vec3(0.24, 0.37, 0.56));
-	myShader->setUniform1i("texBool", 0);
-	myShader->setUniform1i("brightBool", 1);
-	bubble1.draw();
 
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
 	myShader->setUniformMatrix4f("worldMatrix", groundModel.getGlobalTransformMatrix());
