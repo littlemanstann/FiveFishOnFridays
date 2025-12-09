@@ -40,7 +40,7 @@ void ofApp::setup() {
 
 	//Setup a primitive with a texture (example)
 	groundModel.set(1200, 1200);
-	groundModel.setPosition(glm::vec3(0, -10, 0));
+	groundModel.setPosition(glm::vec3(0, GROUND_PLANE, 0));
 	groundModel.rotateDeg(90, glm::vec3(1, 0, 0));
 	ofDisableArbTex();
 	ofLoadImage(groundTexture, "textures/sand.jpg");
@@ -96,9 +96,8 @@ void ofApp::setup() {
 	}
 
 	// SETUP: water droplets
-	waterDroplets.push_back(WaterDroplet(50.0f, glm::vec3(0., 10., 0.)));
-	waterDroplets.push_back(WaterDroplet(35.0f, glm::vec3(60., 15., -35.)));
-	waterDroplets.push_back(WaterDroplet(40.0f, glm::vec3(-70., 20., 70.)));
+	waterDroplets.push_back(WaterDroplet(100.0f, glm::vec3(0., 10., 0.), glm::vec3(0.24, 0.37, 0.56)));
+	waterDroplets.push_back(WaterDroplet(100.0f, glm::vec3(190., 135., -215.), glm::vec3(0.345, 0.635, 0.647)));
 }
 
 //--------------------------------------------------------------
@@ -159,11 +158,25 @@ void ofApp::draw() {
 
 
 	//when you exit the shpere you should be able to see clearly so we switch the depth texture to blank
+	//We need to check all water spheres to see if the player is inside any of them
+	//Each water sphere can be a different colour so we need to set the water colour to the colour of the sphere
+
 	ofTexture tempShaderTexture;
-	if (glm::length(cam.getPlayerPosition()) > BUBBLE_RADIUS) { 
-		tempShaderTexture = blankTexture;
-	} else {
+	bool inWater = false;
+	glm::vec3 waterColor = glm::vec3(0.0);
+
+
+	for (int i = 0; i < waterDroplets.size(); i++) {
+		if (glm::length(cam.getPlayerPosition() - waterDroplets[i].getPosition()) < waterDroplets[i].getRadius()) {
+			inWater = true;
+			waterColor = waterDroplets[i].getColor();
+		}
+	}
+
+	if (inWater) { 
 		tempShaderTexture = fboLDepth.getTexture();
+	} else {
+		tempShaderTexture = blankTexture;
 	}
 
 	//dashing shader
@@ -173,12 +186,14 @@ void ofApp::draw() {
 		speedShader.setUniformTexture("tex1", tempShaderTexture, 1);
 		speedShader.setUniform1f("timer", ofGetElapsedTimef());
 		speedShader.setUniform1f("dashIntensity", 0.1);
+		speedShader.setUniform3f("waterColor", waterColor);
 		quad.draw();
 		speedShader.end();
 	} else {
 		shaderFBO.begin();
 		shaderFBO.setUniformTexture("tex0", fboLighting.getTexture(), 0);
 		shaderFBO.setUniformTexture("tex1", tempShaderTexture, 1);
+		shaderFBO.setUniform3f("waterColor", waterColor);
 
 		
 		quad.draw();
@@ -241,6 +256,11 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	skyboxModel.getMesh(0).draw();
 	skyboxTexture.unbind();
 
+	//// Draw World Water Droplets
+	for (auto & droplet : waterDroplets) {
+		droplet.draw(myShader);
+	}
+
 	for (auto & p : points) {
 		p->draw(myShader, cam.myCone.getGlobalPosition());
 	}
@@ -253,11 +273,6 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	particleEmitter->draw();	
 
 	myShader->end();
-
-	// Draw World Water Droplets
-	for (auto& droplet : waterDroplets) {
-		droplet.draw();
-	}
 
 	cam.end();
 

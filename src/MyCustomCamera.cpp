@@ -42,14 +42,6 @@ void MyCustomCamera::update(float deltaTime) {
         return;
     }
 
-	// GRAVITY CHECK:
-	if (applyGravity) {
-		gravityVel.y += GRAVITY * deltaTime;
-	} else if (gravityVel.y < 0) {
-		// Gradually reset gravity velocity to 0 when not applying gravity
-		gravityVel.y -= GRAVITY * 1.1f * deltaTime;
-	}
-
 	//Look at VFX Code
     if (ofGetKeyPressed('1')) { //Move camera to look at fireworks
         move = glm::vec3(0, 0, 0);
@@ -107,10 +99,22 @@ void MyCustomCamera::update(float deltaTime) {
 		float curveCombination = fmaxf(curveNearZero, curveNearMaxSpeed);
 		speed = glm::sign(speed) * fmaxf(abs(speed) - curveCombination * deltaTime, 0);
 	}
-
 	position += getqForward() * speed * speedModifier * deltaTime;
-	// GRAVITY: Apply gravity velocity to position
-	position += gravityVel * deltaTime;
+
+	// GRAVITY CHECK:
+	if (applyGravity && position.y > GROUND_PLANE) {
+		gravityVel.y += GRAVITY * deltaTime;
+	}
+
+	if (!applyGravity) {//Turn off gravity when in bubble
+		gravityVel.y = 0;
+	}
+
+	if (position.y > GROUND_PLANE) {
+		// GRAVITY: Apply gravity velocity to position
+		position += gravityVel * deltaTime;
+	}
+	position.y = fmax(GROUND_PLANE, position.y);
 
     // need to set ofNode parameters using internal position, orientation
 	myCone.setPosition(position);

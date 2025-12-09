@@ -5,13 +5,17 @@
 class WaterDroplet {
 
 	public:
-		WaterDroplet(float r, glm::vec3 pos);
+		WaterDroplet(float r, glm::vec3 pos, glm::vec3 col);
 		bool isColliding(glm::vec3 playerPos);
-		void draw();
+		void draw(ofShader* myShader);
+		glm::vec3 getPosition(void) { return mesh.getPosition(); }
+		glm::vec3 getColor(void) { return color; }
+		float getRadius(void) { return radius; }
 	
 	protected:
 		Sphere mesh;
 		float radius;
 		ofTexture texture;
+		glm::vec3 color;
 
 };

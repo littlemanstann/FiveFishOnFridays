@@ -40,11 +40,16 @@ void main()
 
 	vec3 result = vec3(0.,0.,0.);
 
+    float shading = ambient + diffuse + specular;
+    
+    if(brightBool == 1){
+        shading = 1.0;
+    }
 
     if(texBool == 1){
-        result = max((ambient + diffuse + specular), brightBool) * texture(tex0, TexCoord).rgb;
+        result = shading * texture(tex0, TexCoord).rgb;
     }else{
-        result = max((ambient + diffuse + specular), brightBool) * objectColor;
+        result = shading * objectColor;
     }
 	result = min(result, 1.0);
     fragColor = vec4(result.rgb, 1.0);

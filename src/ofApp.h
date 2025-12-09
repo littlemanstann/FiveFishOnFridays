@@ -17,7 +17,7 @@
 #define PLAYER_ACCELERATION_FORCE 1
 #define POWERUP_BOOST_FORCE 1
 #define BUBBLE_RADIUS 800
-
+#define GROUND_PLANE -10
 // This is the config for the voronoi mesh (Jansen)
 
 #define BOUND_X 600
