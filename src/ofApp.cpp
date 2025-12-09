@@ -94,8 +94,8 @@ void ofApp::setup() {
 	}
 
 	// SETUP: water droplets
-	waterDroplets.push_back(WaterDroplet(100.0f, glm::vec3(0., 10., 0.), glm::vec3(0.24, 0.37, 0.56)));
-	waterDroplets.push_back(WaterDroplet(100.0f, glm::vec3(190., 135., -215.), glm::vec3(0.345, 0.635, 0.647)));
+	waterDroplets.push_back(WaterDroplet(400.0f, glm::vec3(0., 0, 0.), glm::vec3(0.24, 0.37, 0.56)));
+	waterDroplets.push_back(WaterDroplet(250.0f, glm::vec3(500., 250., -255.), glm::vec3(0.345, 0.635, 0.647)));
 }
 
 //--------------------------------------------------------------
@@ -173,6 +173,7 @@ void ofApp::draw() {
 
 	if (inWater) { 
 		tempShaderTexture = fboLDepth.getTexture();
+		//tempShaderTexture = blankTexture;
 	} else {
 		tempShaderTexture = blankTexture;
 	}
@@ -232,7 +233,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	NPC1.draw();
-
+	/*
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
 	myShader->setUniformMatrix4f("worldMatrix", groundModel.getGlobalTransformMatrix());
 	myShader->setUniform1i("texBool", 1);
@@ -240,6 +241,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	groundTexture.bind();
 	groundModel.draw();
 	groundTexture.unbind();
+	*/
 
 	myShader->setUniformMatrix4f("worldMatrix", skyboxModel.getModelMatrix());
 	myShader->setUniform1i("texBool", 1);

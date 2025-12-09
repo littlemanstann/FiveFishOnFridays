@@ -42,18 +42,6 @@ void MyCustomCamera::update(float deltaTime) {
         return;
     }
 
-	//Look at VFX Code
-    if (ofGetKeyPressed('1')) { //Move camera to look at fireworks
-        move = glm::vec3(0, 0, 0);
-        position = glm::vec3(0, -5, 15);
-        betterLookAt(glm::vec3(1, 0, 0));
-    }
-    if (ofGetKeyPressed('2')) { //Move camera to look at bubble stream
-        move = glm::vec3(0, 0, 0);
-        position = glm::vec3(100, 100, -205);
-        betterLookAt(glm::vec3(100, 100, -200));
-    }
-
 	//Dash Code, when moving you can dash
 	if (ofGetKeyPressed('r') && dash == false) {
 		dash = true;
@@ -102,7 +90,7 @@ void MyCustomCamera::update(float deltaTime) {
 	position += getqForward() * speed * speedModifier * deltaTime;
 
 	// GRAVITY CHECK:
-	if (applyGravity && position.y > GROUND_PLANE) {
+	if (applyGravity ) {
 		gravityVel.y += GRAVITY * deltaTime;
 	}
 
@@ -114,7 +102,12 @@ void MyCustomCamera::update(float deltaTime) {
 		// GRAVITY: Apply gravity velocity to position
 		position += gravityVel * deltaTime;
 	}
-	position.y = fmax(GROUND_PLANE, position.y);
+	else {
+		position = glm::vec3(0, 0, 0);
+		targetPosition = glm::vec3(0, 0, 0);
+		
+	}
+	//position.y = fmax(GROUND_PLANE, position.y);
 
     // need to set ofNode parameters using internal position, orientation
 	myCone.setPosition(position);

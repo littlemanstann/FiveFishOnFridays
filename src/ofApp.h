@@ -16,14 +16,14 @@
 #define SIXTY_FPS 0.016
 #define PLAYER_ACCELERATION_FORCE 1
 #define POWERUP_BOOST_FORCE 1
-#define GROUND_PLANE -10
+#define GROUND_PLANE -200
 // This is the config for the voronoi mesh (Jansen)
 
-#define BOUND_X 600
-#define BOUND_Y 600
-#define BOUND_Z 600
+#define BOUND_X 200
+#define BOUND_Y 200
+#define BOUND_Z 200
 #define DELTA 1
-#define NUM_POINTS 30
+#define NUM_POINTS 15
 
 
 class ofApp : public ofBaseApp {
