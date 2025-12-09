@@ -42,6 +42,14 @@ void MyCustomCamera::update(float deltaTime) {
         return;
     }
 
+	// GRAVITY CHECK:
+	if (applyGravity) {
+		gravityVel.y += GRAVITY * deltaTime;
+	} else if (gravityVel.y < 0) {
+		// Gradually reset gravity velocity to 0 when not applying gravity
+		gravityVel.y -= GRAVITY * 1.1f * deltaTime;
+	}
+
 	//Look at VFX Code
     if (ofGetKeyPressed('1')) { //Move camera to look at fireworks
         move = glm::vec3(0, 0, 0);
@@ -101,6 +109,8 @@ void MyCustomCamera::update(float deltaTime) {
 	}
 
 	position += getqForward() * speed * speedModifier * deltaTime;
+	// GRAVITY: Apply gravity velocity to position
+	position += gravityVel * deltaTime;
 
     // need to set ofNode parameters using internal position, orientation
 	myCone.setPosition(position);
@@ -207,4 +217,8 @@ glm::vec3 MyCustomCamera::getqUp() {
 
 void MyCustomCamera::addAcceleration(float force) {
 	move += getqForward() * force;
+}
+
+void MyCustomCamera::setGravity(bool gravity) {
+	applyGravity = gravity;
 }

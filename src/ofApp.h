@@ -9,6 +9,7 @@
 #include "Beacon.h"
 #include "GLFW/glfw3.h"
 #include "3DPoint.h"
+#include "WaterDroplet.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -130,4 +131,12 @@ public:
 	float t;
 
 
+	// Mouse Lock FPS camera
+	// Variables for mouse lock
+	bool mouseLocked;
+	int lastMouseX, lastMouseY;
+	GLFWwindow* glfwWindow;
+
+	// World Water Droplets
+	vector<WaterDroplet> waterDroplets;
 };
