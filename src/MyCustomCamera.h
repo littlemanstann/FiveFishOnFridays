@@ -31,6 +31,9 @@ public:
 	float interactRange = 5.0f;
 	bool dash = false;
 	bool isTalking = false;
+	// Enable/Disable gravity effect on camera
+	void setGravity(bool gravity);
+	
 
 private:
 	ofxAssimpModelLoader myPlayer;
@@ -60,4 +63,9 @@ private:
 	const float xRotation = -15;
 	
 	bool canMoveFlag = true;
+
+	// GRAVITY CODE:
+	glm::vec3 gravityVel;
+	float GRAVITY = -9.8f;
+	bool applyGravity = false;
 };
