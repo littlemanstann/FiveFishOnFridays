@@ -10,6 +10,7 @@
 #include "GLFW/glfw3.h"
 #include "3DPoint.h"
 #include "WaterDroplet.h"
+#include "SeaweedBall.h"
 
 #define PLAYER_RADIUS 1
 #define PLAYER_MAX_HP 5
@@ -149,4 +150,7 @@ public:
 	Player* fish1;
 	Player* fish2;
 	Player* fish3;
+
+	// SETUP Seaweed Ball Particles
+	std::unique_ptr<SeaweedBall> weed;
 };

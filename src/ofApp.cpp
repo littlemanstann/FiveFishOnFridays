@@ -239,6 +239,10 @@ void ofApp::setup() {
 	waterDroplets.push_back(WaterDroplet(30 / 2, glm::vec3(-163, 254, 191), tempCol));
 	tempCol = glm::vec3(0.566, 0.491, 0.788);
 	waterDroplets.push_back(WaterDroplet(27 / 2, glm::vec3(-102, 332, 172), tempCol));
+
+	// Setup Seaweed Ball stuff
+	weed = std::make_unique<SeaweedBall>(cam);
+	weed->setPosition(glm::vec3(10, 10, 0));
 }
 
 //--------------------------------------------------------------
@@ -294,12 +298,15 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
+	// Draw Particle Systems
 	fboParticle.begin();
 	ofClear(0, 0, 0, 0);
 	cam.begin();
 	patricleEmitter1->draw();
+	weed->draw();
 	cam.end();
 	fboParticle.end();
+
 
 	// ------------ Lighting pass: Save the lighting pass to "fboLighting" -===========
 	
