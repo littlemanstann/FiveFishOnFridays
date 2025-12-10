@@ -389,6 +389,8 @@ void ofApp::draw() {
 		
 		
 	}
+
+	//fboParticle.draw(0, 0);
 	//ofDisableDepthTest();
 	dialogue.draw();
 	

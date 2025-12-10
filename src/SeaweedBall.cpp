@@ -9,7 +9,7 @@ SeaweedBall::SeaweedBall(ofCamera& camRef)
     phases.resize(numParticles);
     ids.resize(numParticles);
     seaweedImage.load("images/firesheet4x4.jpg");
-    seaweedBall.load("trailShader/trail.vert", "trailShader/trail.frag", "trailShader/trail.geom");
+    seaweedBall.load("shader/trailShader/trail.vert", "shader/trailShader/trail.frag", "shader/trailShader/trail.geom");
 
     for (int i = 0; i < numParticles; i++) {
         positions[i] = clover_sample(); // start at origin
