@@ -350,7 +350,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	//Draw Player
 	myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
 	myShader->setUniform1i("texBool", 1);
-	cam.drawMeShaded();
+	cam.drawMeShaded(myShader);
 
 	//Draw Cone (npc)
 	myShader->setUniformMatrix4f("worldMatrix", NPC1.getGlobalTransformMatrix());

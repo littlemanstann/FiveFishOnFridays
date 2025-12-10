@@ -10,8 +10,10 @@ class Player {
 
 		void update(float velocity);
 		void draw(ofShader* myShader);
+		void draw(ofShader* myShader, ofTexture* fishTexture);
 
 		void setPosition(const glm::vec3& pos);
+		void setOrientation(const glm::quat& ori);
 
 
 
@@ -25,5 +27,8 @@ class Player {
 		// Create MeshObjects for each segment
 		MeshObject meshObj[5];
 
+		float animationTime;
+		float currentAnimationSpeed;
+		float baseSpeed;
 
 };

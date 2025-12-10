@@ -25,6 +25,7 @@ public:
 
     // Rotation
     virtual void setRotation(float angleDeg, const glm::vec3& axis);
+    virtual void setRotation(glm::quat orientation);
     virtual void setRotationMatrix(float angleDeg, const glm::vec3& axis);
 	virtual void setOrbitMatrix(float angleDeg, const glm::vec3& axis, const glm::vec3& center); // Does the equation for orbiting around a point
     virtual glm::mat4 getRotationMatrix() const;

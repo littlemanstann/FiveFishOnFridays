@@ -23,8 +23,8 @@ MyCustomCamera::MyCustomCamera() {
 
 	myCone.set(1, 3);
 
-	myPlayer.load("models/FISH.glb");
-	myPlayer.enableNormals();
+	//myPlayer.load("models/FISH.glb");
+	//myPlayer.enableNormals();
 
 	ofDisableArbTex();
 	ofLoadImage(texture, "textures/fishTexture.png");
@@ -87,9 +87,6 @@ void MyCustomCamera::update(float deltaTime) {
 	}
 	position += getqForward() * speed * speedModifier * deltaTime;
 
-	// Update animation
-	//myPlayer.update(1.0);
-
 	// GRAVITY CHECK:
 	if (applyGravity ) {
 		gravityVel.y += GRAVITY * deltaTime;
@@ -130,6 +127,15 @@ void MyCustomCamera::update(float deltaTime) {
 		targetPosition += glm::normalize((position - targetPosition)) * targetSpeed * deltaTime;
 	}
 
+	printf("Speed: %f DashMod: %f\n", speed * speedModifier, speedModifier);
+
+	// Player Updates
+	myPlayer.setPosition(position);
+	myPlayer.setOrientation(orientation);
+
+	// Update animation
+	myPlayer.update(speed * speedModifier);
+
 	//Camera Offset From Position Follower
 	pitch(xRotation * DEG_TO_RAD); //rotate to camera rotation offset
 	setPosition(targetPosition);
@@ -138,15 +144,17 @@ void MyCustomCamera::update(float deltaTime) {
 	pitch(-xRotation * DEG_TO_RAD); //rotate back
 }
 
-void MyCustomCamera::drawMeShaded() {
+void MyCustomCamera::drawMeShaded(ofShader* myShader) {
 	//you would have to pass a pointer to the shader to do this...
+	/*
 	for (int i = 0; i < myPlayer.getNumMeshes(); i++) {
 		texture.bind();
 		myPlayer.getMesh(i).draw();
 		texture.unbind();
 	}
+	*/
 	
-	//myPlayer.draw();
+	myPlayer.draw(myShader, &texture);
 }
 glm::mat4 MyCustomCamera::getMyGlobalTransformMatrix() {
 	// 3. GLM QUIRK if you rotate an object back and forth, after enough updates the
