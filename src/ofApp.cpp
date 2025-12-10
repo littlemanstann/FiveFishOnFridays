@@ -101,6 +101,58 @@ void ofApp::setup() {
 	// SETUP: water droplets
 	waterDroplets.push_back(WaterDroplet(200.0f, glm::vec3(0., 0, 0.), glm::vec3(0.24, 0.37, 0.56)));
 	waterDroplets.push_back(WaterDroplet(125.0f, glm::vec3(500., 250., -255.), glm::vec3(0.345, 0.635, 0.647)));
+
+	//the 20 bubbles in a line
+	glm::vec3 tempCol = glm::vec3(0.24, 0.37, 0.56);
+
+
+	//1-5
+	tempCol = glm::vec3(0.02, 0.49, 0.72);
+	waterDroplets.push_back(WaterDroplet(27.9/2, glm::vec3(633, -7, -213), tempCol));
+	tempCol = glm::vec3(0.028, 0.486, 0.642);
+	waterDroplets.push_back(WaterDroplet(33.0/2, glm::vec3(598, 4.9, -110.96), tempCol));
+	tempCol = glm::vec3(0.037, 0.482, 0.575);
+	waterDroplets.push_back(WaterDroplet(45.16 / 2, glm::vec3(550, 15.3, -16), tempCol));
+	tempCol = glm::vec3(0.047, 0.478, 0.511);
+	waterDroplets.push_back(WaterDroplet(54 / 2, glm::vec3(454, 42, 65), tempCol));
+	tempCol = glm::vec3(0.06, 0.473, 0.448);
+	waterDroplets.push_back(WaterDroplet(54 / 2, glm::vec3(339, 87, 46), tempCol));
+
+	//2-10
+	tempCol = glm::vec3(0.078, 0.468, 0.378);
+	waterDroplets.push_back(WaterDroplet(54 / 2, glm::vec3(265, 124, -61), tempCol));
+	tempCol = glm::vec3(0.095, 0.464, 0.329);
+	waterDroplets.push_back(WaterDroplet(39 / 2, glm::vec3(305, 103, -179), tempCol));
+	tempCol = glm::vec3(0.115, 0.459, 0.275);
+	waterDroplets.push_back(WaterDroplet(33 / 2, glm::vec3(365, 64, -290), tempCol));
+	tempCol = glm::vec3(0.14, 0.455, 0.225);
+	waterDroplets.push_back(WaterDroplet(30 / 2, glm::vec3(394, 25, -401), tempCol));
+	tempCol = glm::vec3(0.17, 0.449, 0.179);
+	waterDroplets.push_back(WaterDroplet(38 / 2, glm::vec3(341, 0, -515), tempCol));
+
+	//11 - 15
+	tempCol = glm::vec3(0.262, 0.421, 0.193);
+	waterDroplets.push_back(WaterDroplet(38 / 2, glm::vec3(202, 15, -590), tempCol));
+	tempCol = glm::vec3(0.25, 0.40, 0.311);
+	waterDroplets.push_back(WaterDroplet(38 / 2, glm::vec3(85, 2, -575), tempCol));
+	tempCol = glm::vec3(0.24, 0.37, 0.56);
+	waterDroplets.push_back(WaterDroplet(38 / 2, glm::vec3(-34, -41, -505), tempCol));
+	tempCol = glm::vec3(0.513, 0.367, 0.23);
+	waterDroplets.push_back(WaterDroplet(38 / 2, glm::vec3(-133, -48, -414), tempCol));
+	tempCol = glm::vec3(0.642, 0.346, 0.246);
+	waterDroplets.push_back(WaterDroplet(44 / 2, glm::vec3(-211, -19, -302), tempCol));
+
+	//16 - 20
+	tempCol = glm::vec3(0.691, 0.388, 0.371);
+	waterDroplets.push_back(WaterDroplet(55 / 2, glm::vec3(-280, 51, -124), tempCol));
+	tempCol = glm::vec3(0.753, 0.442, 0.56);
+	waterDroplets.push_back(WaterDroplet(50 / 2, glm::vec3(-287, 120, 33), tempCol));
+	tempCol = glm::vec3(0.807, 0.49, 0.751);
+	waterDroplets.push_back(WaterDroplet(42 / 2, glm::vec3(-223, 173, 163), tempCol));
+	tempCol = glm::vec3(0.69, 0.486, 0.768);
+	waterDroplets.push_back(WaterDroplet(30 / 2, glm::vec3(-163, 254, 191), tempCol));
+	tempCol = glm::vec3(0.566, 0.491, 0.788);
+	waterDroplets.push_back(WaterDroplet(27 / 2, glm::vec3(-102, 332, 172), tempCol));
 }
 
 //--------------------------------------------------------------
