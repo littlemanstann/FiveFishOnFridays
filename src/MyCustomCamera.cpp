@@ -43,7 +43,7 @@ void MyCustomCamera::update(float deltaTime) {
     }
 
 	//Dash Code, when moving you can dash
-	if (ofGetKeyPressed('r') && dash == false) {
+	if ((ofGetKeyPressed('r') && dash == false) || (ofGetKeyPressed(OF_KEY_LEFT_SHIFT) && dash == false)) {
 		dash = true;
 		timeDashBegin = ofGetElapsedTimef();
 	}
