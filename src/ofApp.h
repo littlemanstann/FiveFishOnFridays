@@ -148,11 +148,11 @@ public:
 	// [Game Over Screen]
 	ofTrueTypeFont rockSalt;
 
-	// Hierarchical Fish Models
+	// Hierarchical Fish NPCs
 	Player* fish1;
 	Player* fish2;
 	Player* fish3;
 
 	// SETUP Seaweed Ball Particles
-	std::unique_ptr<SeaweedBall> weed;
+	std::unique_ptr<SeaweedBall> weed[5];
 };

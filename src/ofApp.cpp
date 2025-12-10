@@ -249,8 +249,10 @@ void ofApp::setup() {
 	waterDroplets.push_back(WaterDroplet(27 / 2, glm::vec3(-102, 332, 172), tempCol));
 
 	// Setup Seaweed Ball stuff
-	weed = std::make_unique<SeaweedBall>(cam);
-	weed->setPosition(glm::vec3(10, 10, 0));
+	for (int i = 0; i < 5; i++) {
+		weed[i] = std::make_unique<SeaweedBall>(cam);
+		weed[i]->setPosition(glm::vec3(500. + (i * 16), 280., -255. + (i * 16)));
+	}
 }
 
 //--------------------------------------------------------------
@@ -287,7 +289,9 @@ void ofApp::update() {
 	if (patricleEmitter3) patricleEmitter3->update(ofGetLastFrameTime());
 	if (patricleEmitter4) patricleEmitter4->update(ofGetLastFrameTime());
 	if (patricleEmitter5) patricleEmitter5->update(ofGetLastFrameTime());
-	if (weed) weed->update(ofGetLastFrameTime());
+	for (int i = 0; i < 5; i++) {
+		weed[i]->update(ofGetLastFrameTime());
+	}
 
 	skyboxModel.setPosition(cam.getPlayerPosition().x, cam.getPlayerPosition().y, cam.getPlayerPosition().z);
 
@@ -299,6 +303,7 @@ void ofApp::update() {
 			cam.setGravity(false);
 	}
 
+	// Update fish NPC animations
 	fish1->update(30);
 	fish2->update(30);
 	fish3->update(30);
@@ -316,7 +321,9 @@ void ofApp::draw() {
 	patricleEmitter3->draw();
 	patricleEmitter4->draw();
 	patricleEmitter5->draw();
-	weed->draw();
+	for (int i = 0; i < 5; i++) {
+		weed[i]->draw();
+	}
 	cam.end();
 	fboParticle.end();
 

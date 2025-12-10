@@ -28,9 +28,9 @@ void SeaweedBall::update(float dt) {
         if (s.age == 0 || s.age > s.lifetime) {
             s.pos = position + clover_sample();
             s.age = 0;
-            s.lifetime = ofRandom(2, 4);
-            s.phase = ofRandom(TWO_PI);
-            s.vel = glm::vec3(0, 1, 0);
+            s.lifetime = ofRandom(4, 8);
+            s.phase = 0;
+            s.vel = glm::vec3(0, -1, 0);
         }
 
         s.pos += s.vel * dt;
@@ -83,5 +83,5 @@ glm::vec3 SeaweedBall::clover_sample() {
     float y = r * sin(theta);
 
     // Return the point in the XY plane
-    return glm::vec3(x, y, 0);
+    return glm::vec3(x, 0, y);
 }
