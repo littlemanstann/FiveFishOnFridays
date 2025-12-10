@@ -100,17 +100,15 @@ void ofApp::setup() {
 	fish1 = new Player();
 	fish1->setPosition(glm::vec3(25, 45, -30));
 	posOfInteractableObjs.push_back(glm::vec3(25, 45, -30));
-	msgsOfInteractableObjs.push_back({ "Do you believe it to be a privelege to live in fear of whats to come? Even if you know its coming?",
-		"You must speak with precision and intent. If you don't know don't make up an answer for that wuold be your biggest shame.",
-		"Far greater than any answer you could give from the heart.",
-		"For man fears not by choice but by fate and so you too are bound by knowledge and the regret of ignorance. For would it have been better to now know at all if it was inevitable?"});
+	msgsOfInteractableObjs.push_back({ "Where did you come from?",
+		"Was it Friday there, too?"});
 
 	fish2 = new Player();
 	fish2->setPosition(glm::vec3(80, 0, 60));
 	posOfInteractableObjs.push_back(glm::vec3(80, 0, 60));
-	msgsOfInteractableObjs.push_back({ "Hark! For the reckoning is here. A day of respite has become the day for tribulations. May your past be forgotten and your future never-present.",
-		"You there! Do you think yourself forgiven?",
-		"Who can decide what sins weigh the heaviest and who without sin can forgive them? And so are we all doomed?",
+	msgsOfInteractableObjs.push_back({ "love Friday!!",
+		"Friday is the best day of the year!!!!!",
+		"As long as it's Friday, we will live forever!",
 		});
 
 	fish3 = new Player();
@@ -139,23 +137,23 @@ void ofApp::setup() {
 
 	//Setup Emitter
 	patricleEmitter1 = std::make_unique<BubbleEmitter>(cam);
-	patricleEmitter1->setPosition(glm::vec3(500, 200, -255));
+	patricleEmitter1->setPosition(glm::vec3(500, 150, -255));
 	patricleEmitter1->setSize(5); // cube size
 
 	patricleEmitter2 = std::make_unique<BubbleEmitter>(cam);
-	patricleEmitter2->setPosition(glm::vec3(400, 200, -255));
+	patricleEmitter2->setPosition(glm::vec3(525, 150, -250));
 	patricleEmitter2->setSize(5); // cube size
 
 	patricleEmitter3 = std::make_unique<BubbleEmitter>(cam);
-	patricleEmitter3->setPosition(glm::vec3(600, 200, -255));
+	patricleEmitter3->setPosition(glm::vec3(490, 165, -240));
 	patricleEmitter3->setSize(5); // cube size
 
 	patricleEmitter4 = std::make_unique<BubbleEmitter>(cam);
-	patricleEmitter4->setPosition(glm::vec3(500, 100, -255));
+	patricleEmitter4->setPosition(glm::vec3(500, 150, -265));
 	patricleEmitter4->setSize(5); // cube size
 
 	patricleEmitter5 = std::make_unique<BubbleEmitter>(cam);
-	patricleEmitter5->setPosition(glm::vec3(500, 300, -255));
+	patricleEmitter5->setPosition(glm::vec3(500, 165, -260));
 	patricleEmitter5->setSize(5); // cube size
 
 	// Setup voronoi mesh
@@ -298,6 +296,10 @@ void ofApp::draw() {
 	ofClear(0, 0, 0, 0);
 	cam.begin();
 	patricleEmitter1->draw();
+	patricleEmitter2->draw();
+	patricleEmitter3->draw();
+	patricleEmitter4->draw();
+	patricleEmitter5->draw();
 	cam.end();
 	fboParticle.end();
 
@@ -552,7 +554,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	myShader->setUniform1i("brightBool", 1);
-	patricleEmitter5->draw();*/
+	*/
 
 	
 
