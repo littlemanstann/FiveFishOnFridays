@@ -8,8 +8,11 @@ SeaweedBall::SeaweedBall(ofCamera& camRef)
     normals.resize(numParticles);
     phases.resize(numParticles);
     ids.resize(numParticles);
+	seaweed.resize(numParticles);
     seaweedImage.load("images/firesheet4x4.jpg");
-    seaweedBall.load("trailShader/trail.vert", "trailShader/trail.frag", "trailShader/trail.geom");
+    seaweedBall.load("shader/bubble.vert",
+                     "shader/bubble.frag",
+                     "shader/bubble.geom");
 
     for (int i = 0; i < numParticles; i++) {
         positions[i] = clover_sample(); // start at origin
@@ -17,10 +20,32 @@ SeaweedBall::SeaweedBall(ofCamera& camRef)
         ids[i] = floor(ofRandom(16.0)); // assign random texture ID out of 16 available options (4x4 sprite sheet)
         phases[i] = ofRandom(0, 1);
     }
-    vbo.setVertexData(positions.data(), numParticles, GL_STATIC_DRAW);
-    vbo.setAttributeData(1, &normals[0].x, 3, numParticles, GL_STATIC_DRAW);
-    vbo.setAttributeData(2, phases.data(), 1, numParticles, GL_STATIC_DRAW);
-    vbo.setAttributeData(3, ids.data(), 1, numParticles, GL_STATIC_DRAW);
+    vbo.setVertexData(positions.data(), numParticles, GL_DYNAMIC_DRAW);
+}
+
+void SeaweedBall::update(float dt) {
+    for (auto& s : seaweed) {
+        if (s.age == 0 || s.age > s.lifetime) {
+            s.pos = position + clover_sample();
+            s.age = 0;
+            s.lifetime = ofRandom(2, 4);
+            s.phase = ofRandom(TWO_PI);
+            s.vel = glm::vec3(0, 1, 0);
+        }
+
+        s.pos += s.vel * dt;
+		s.pos.x += (sin(s.age * 3.0 + s.phase) * 0.1); // sway side to side
+		s.pos.z += (cos(s.age * 2.0 + s.phase) * 0.1); // sway forward and back
+
+        s.age += dt;
+
+        int idx = &s - &seaweed[0];
+        positions[idx] = s.pos;
+       // vboAlpha[idx] = 1.0f - (b.age / b.lifetime);
+    }
+
+    vbo.updateVertexData(positions.data(), positions.size());
+    //vbo.updateAttributeData(1, vboAlpha.data(), vboAlpha.size());
 }
 
 void SeaweedBall::draw() {

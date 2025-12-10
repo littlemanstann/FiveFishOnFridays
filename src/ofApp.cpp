@@ -277,6 +277,7 @@ void ofApp::update() {
 	if (patricleEmitter3) patricleEmitter3->update(ofGetLastFrameTime());
 	if (patricleEmitter4) patricleEmitter4->update(ofGetLastFrameTime());
 	if (patricleEmitter5) patricleEmitter5->update(ofGetLastFrameTime());
+	if (weed) weed->update(ofGetLastFrameTime());
 
 	skyboxModel.setPosition(cam.getPlayerPosition().x, cam.getPlayerPosition().y, cam.getPlayerPosition().z);
 
