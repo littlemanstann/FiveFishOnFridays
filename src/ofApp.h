@@ -67,6 +67,7 @@ public:
 	ofxAssimpModelLoader amoebaBlue1;
 	ofxAssimpModelLoader amoebaBlue2;
 	ofxAssimpModelLoader rockPatch;
+	glm::vec3 *objectVelocities[10];
 
 	//Textures
 	ofTexture groundTexture;

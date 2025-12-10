@@ -106,6 +106,13 @@ void ofApp::setup() {
 	rockPatch.setScale(0.02, -0.02, -0.02);
 	rockPatch.setPosition(0, -20, 0);
 
+	// Setup velocity movement
+	/*
+	for (int i = 0; i < 10; i++) {
+		objectVelocities[i] = &glm::vec3(ofRandom(-1, 1), ofRandom(-1, 1), ofRandom(-1, 1));
+	}
+	*/
+
 	//Setup Interactable NPC
 	fish1 = new Player();
 	fish1->setPosition(glm::vec3(25, 45, -30));
@@ -307,6 +314,10 @@ void ofApp::update() {
 	fish1->update(30);
 	fish2->update(30);
 	fish3->update(30);
+
+	// Update object positions
+	// glm::vec3 newPos = moveInSphere(glm::vec3(500., 250., -255.), 125.0f, 1.0f, tardigrade.getPosition(), *objectVelocities[0], ofGetLastFrameTime());
+	// tardigrade.setPosition(newPos.x, newPos.y, newPos.z);
 }
 
 //--------------------------------------------------------------
@@ -814,3 +825,25 @@ std::vector<std::pair<int, int>> ofApp::choose2(int n) {
 	return pairs;
 }
 
+// Helper function to move an object within a sphere and bounce off the walls
+glm::vec3 moveInSphere(glm::vec3 sphereCenter, float radius, float speed,
+	glm::vec3 currentPos, glm::vec3& velocity, float deltaTime) {
+	// Move position based on velocity
+	glm::vec3 newPos = currentPos + velocity * speed * deltaTime;
+
+	// Check if outside sphere
+	glm::vec3 offset = newPos - sphereCenter;
+	float distance = glm::length(offset);
+
+	if (distance > radius) {
+		// Project back onto sphere surface
+		glm::vec3 direction = glm::normalize(offset);
+		newPos = sphereCenter + direction * radius;
+
+		// Reflect velocity off sphere surface (bounce)
+		glm::vec3 normal = direction; // Normal points outward from center
+		velocity = glm::reflect(velocity, -normal); // Reflect inward
+	}
+
+	return newPos;
+}
