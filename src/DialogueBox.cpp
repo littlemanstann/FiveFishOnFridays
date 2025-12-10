@@ -38,8 +38,7 @@ void DialogueBox::update() {
             if (charIndex < messages[currentMessageIndex].length()) {
                 
                 
-                charIndex++;
-                lineLength++;
+                
                 if (messages[currentMessageIndex][charIndex] == ' ') {
                     if (lineLength > 50) {
                         displayedText += "\n";
@@ -52,6 +51,9 @@ void DialogueBox::update() {
                 else {
                     displayedText += messages[currentMessageIndex][charIndex];
                 }
+
+                charIndex++;
+                lineLength++;
 
                 
                 lastCharTime = currentTime;
@@ -134,6 +136,7 @@ void DialogueBox::advanceToNextMessage() {
 
 void DialogueBox::finishCurrentMessage() {
     displayedText = "";
+    lineLength = 0;
     for (size_t i = 0; i < messages[currentMessageIndex].length(); i++) {
         char c = messages[currentMessageIndex][i];
         displayedText += c;
