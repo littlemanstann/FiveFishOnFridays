@@ -16,9 +16,6 @@ class Player {
 
 
 	protected:
-		float radius;
-		float height;
-
 		glm::vec3 targetPos;
 		glm::vec3 cameraPos;
 

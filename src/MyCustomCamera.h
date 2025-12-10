@@ -2,6 +2,7 @@
 #include "ofCamera.h"
 #include "of3dPrimitives.h"
 #include "ofxAssimpModelLoader.h"
+#include "Player.h"
 
 class MyCustomCamera : public ofCamera {
 public:
@@ -40,7 +41,7 @@ public:
 	
 
 private:
-	ofxAssimpModelLoader myPlayer;
+	Player myPlayer;
 	ofTexture texture;
 
     glm::vec3 BASE_UP;

@@ -98,6 +98,10 @@ void ofApp::setup() {
 		t->cylinders = t->createWireframeCylinders(t->vertices);
 	}
 
+	// SETUP: fish NPCs
+	
+	
+
 	// SETUP: water droplets
 	waterDroplets.push_back(WaterDroplet(200.0f, glm::vec3(0., 0, 0.), glm::vec3(0.24, 0.37, 0.56)));
 	waterDroplets.push_back(WaterDroplet(125.0f, glm::vec3(500., 250., -255.), glm::vec3(0.345, 0.635, 0.647)));
@@ -196,6 +200,7 @@ void ofApp::update() {
 			cam.setGravity(false);
 	}
 
+	fish1.update(1.0f);
 }
 
 //--------------------------------------------------------------
@@ -219,7 +224,6 @@ void ofApp::draw() {
 	ofTexture tempShaderTexture;
 	bool inWater = false;
 	glm::vec3 waterColor = glm::vec3(0.0);
-
 
 	for (int i = 0; i < waterDroplets.size(); i++) {
 		if (glm::length(cam.getPlayerPosition() - waterDroplets[i].getPosition()) < waterDroplets[i].getRadius()) {
@@ -254,8 +258,6 @@ void ofApp::draw() {
 		quad.draw();
 		shaderFBO.end();
 	}
-
-	
 
 	//Game Over Screen
 	if (cam.isDead) {
@@ -308,6 +310,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("lightColor", glm::vec3(1, 1, 1));
 	myShader->setUniform1i("texBool", 0);
 	myShader->setUniform1i("brightBool", 0);
+	myShader->setUniform1f("opacity", 1.0f);
 
 	//Draw Skybox
 	ofDisableDepthTest();
@@ -339,25 +342,32 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	groundTexture.unbind();
 	*/
 
-	
-
-	//// Draw World Water Droplets
-	for (auto & droplet : waterDroplets) {
-		droplet.draw(myShader);
-	}
+	// Draw Fish NPCs
+	// Move Fish NPCs
+	fish1.draw();
 
 	for (auto & p : points) {
 		p->draw(myShader, cam.myCone.getGlobalPosition());
 	}
 
-	//Draw Bubble Shader (draw last), it 
+	// Make water droplets semi-transparent
+	glDepthMask(GL_FALSE);
+	ofEnableAlphaBlending();
+	myShader->setUniform1f("opacity", 0.5f);
+	//// Draw World Water Droplets
+	for (auto& droplet : waterDroplets) {
+		droplet.draw(myShader);
+	}
+	myShader->setUniform1f("opacity", 1.0f);
+	ofDisableAlphaBlending();
+	glDepthMask(GL_TRUE);
+
+	//Draw Bubble Shader (draw last), it breaks it
 	myShader->setUniformMatrix4f("worldMatrix", particleEmitter->getBox().getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	myShader->setUniform1i("brightBool", 1);
 	particleEmitter->draw();	
-
-
 
 	myShader->end();
 

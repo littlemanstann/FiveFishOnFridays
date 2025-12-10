@@ -134,5 +134,6 @@ public:
 	// [Game Over Screen]
 	ofTrueTypeFont rockSalt;
 
-
+	// Hierarchical Fish Models
+	Player fish1;
 };

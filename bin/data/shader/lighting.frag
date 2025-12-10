@@ -13,6 +13,7 @@ uniform vec3 viewPos;
 uniform vec3 lightColor; // not presently used, mix in if you like
 uniform vec3 objectColor;
 uniform float specularPower;
+uniform float opacity;
 
 out vec4 fragColor;
 
@@ -52,7 +53,7 @@ void main()
         result = shading * objectColor;
     }
 	result = min(result, 1.0);
-    fragColor = vec4(result.rgb, 1.0);
+    fragColor = vec4(result.rgb, opacity);
 /*
 if (FragPos.x > 0) fragColor = vec4(1,0,0,1);
     fragColor.rgb = vec3(N.x*0.5+0.5, 0.3, N.z*0.5+0.5);

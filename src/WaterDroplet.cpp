@@ -18,6 +18,6 @@ void WaterDroplet::draw(ofShader * myShader) {
 	myShader->setUniformMatrix4f("worldMatrix", mesh.getMatrix());
 	myShader->setUniform3f("objectColor", color);
 	myShader->setUniform1i("texBool", 0);
-	myShader->setUniform1i("brightBool", 1);
+	myShader->setUniform1i("brightBool", 0);
 	mesh.draw();
 }
