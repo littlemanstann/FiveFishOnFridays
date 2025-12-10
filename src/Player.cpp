@@ -72,13 +72,19 @@ void Player::update(float velocity) {
 		glm::mat4 rot4 = glm::rotate(angle4, glm::vec3(0, 0, 1));
 		meshObj[4].setMatrix(meshObj[3].getMatrix() * rot4);
 
+		ofMatrix4x4 m = meshObj[4].getMatrix();
+
+
 	}
 }
 
-void Player::draw() {
+void Player::draw(ofShader* myShader) {
 
 	ofSetColor(1.0);
 	for (int i = 0; i < 5; i++) {
+		myShader->setUniformMatrix4f("worldMatrix", meshObj[i].getMatrix());
+		myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
+		myShader->setUniform1i("texBool", 0);
 		meshObj[i].draw();
 	}
 }

@@ -99,7 +99,7 @@ void ofApp::setup() {
 	}
 
 	// SETUP: fish NPCs
-	
+	fish1 = new Player();
 	
 
 	// SETUP: water droplets
@@ -200,7 +200,7 @@ void ofApp::update() {
 			cam.setGravity(false);
 	}
 
-	fish1.update(1.0f);
+	fish1->update(30);
 }
 
 //--------------------------------------------------------------
@@ -331,7 +331,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniformMatrix4f("worldMatrix", NPC1.getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
-	NPC1.draw();
+	//NPC1.draw();
 	/*
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
 	myShader->setUniformMatrix4f("worldMatrix", groundModel.getGlobalTransformMatrix());
@@ -344,11 +344,15 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 
 	// Draw Fish NPCs
 	// Move Fish NPCs
-	fish1.draw();
+	fish1->draw(myShader);
 
 	for (auto & p : points) {
 		p->draw(myShader, cam.myCone.getGlobalPosition());
 	}
+
+	
+	
+
 
 	// Make water droplets semi-transparent
 	glDepthMask(GL_FALSE);
@@ -362,6 +366,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	ofDisableAlphaBlending();
 	glDepthMask(GL_TRUE);
 
+	
 	//Draw Bubble Shader (draw last), it breaks it
 	myShader->setUniformMatrix4f("worldMatrix", particleEmitter->getBox().getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
@@ -369,7 +374,11 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform1i("brightBool", 1);
 	particleEmitter->draw();	
 
+	
+
 	myShader->end();
+
+	
 
 	cam.end();
 

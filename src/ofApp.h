@@ -135,5 +135,5 @@ public:
 	ofTrueTypeFont rockSalt;
 
 	// Hierarchical Fish Models
-	Player fish1;
+	Player* fish1;
 };

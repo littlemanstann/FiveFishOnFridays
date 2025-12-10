@@ -9,7 +9,7 @@ class Player {
 		Player();
 
 		void update(float velocity);
-		void draw();
+		void draw(ofShader* myShader);
 
 		void setPosition(const glm::vec3& pos);
 
