@@ -60,7 +60,9 @@ public:
 	ofPlanePrimitive groundModel;
 	ofxAssimpModelLoader skyboxModel;
 	ofxAssimpModelLoader tardigrade;
+	ofxAssimpModelLoader tardigrade2;
 	ofxAssimpModelLoader amoebaGreen1;
+	ofxAssimpModelLoader amoebaGreen2;
 	ofxAssimpModelLoader mossPatch;
 	ofxAssimpModelLoader amoebaBlue1;
 	ofxAssimpModelLoader amoebaBlue2;
