@@ -305,8 +305,11 @@ void ofApp::update() {
 
 	// Update fish NPC animations
 	fish1->update(30);
+	fish1->setColor(glm::vec3(0.2f, 0.6f, 0.1f));
 	fish2->update(30);
+	fish2->setColor(glm::vec3(0.9f, 0.3f, 0.2f));
 	fish3->update(30);
+	fish3->setColor(glm::vec3(0.5f, 0.6f, 0.9f));
 }
 
 //--------------------------------------------------------------

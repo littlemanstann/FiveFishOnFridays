@@ -4,6 +4,7 @@ Player::Player() {
 	animationTime = 0.0f;
 	currentAnimationSpeed = 0.0f;
 	baseSpeed = 4.0f;
+	color = glm::vec3(0, 0, 0);
 	
 	for (int i = 0; i < 5; i++) {
 		model[i].load("models/Fish_Segmented.fbx");
@@ -27,6 +28,10 @@ void Player::setOrientation(const glm::quat& ori) {
 	meshObj[2].setRotation(ori);
 	// Flip rotation to face forward
 	meshObj[2].setRotation(90, glm::vec3(-1, 0, 0));
+}
+
+void Player::setColor(glm::vec3 rgb) {
+	color = rgb;
 }
 
 void Player::update(float velocity) {
@@ -78,7 +83,7 @@ void Player::update(float velocity) {
 void Player::draw(ofShader* myShader) {
 	for (int i = 0; i < 5; i++) {
 		myShader->setUniformMatrix4f("worldMatrix", meshObj[i].getMatrix());
-		myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
+		myShader->setUniform3f("objectColor", color);
 		myShader->setUniform1i("texBool", 0);
 		meshObj[i].draw();
 	}

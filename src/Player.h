@@ -11,6 +11,7 @@ class Player {
 		void update(float velocity);
 		void draw(ofShader* myShader);
 		void draw(ofShader* myShader, ofTexture* fishTexture);
+		void setColor(glm::vec3 rgb);
 
 		void setPosition(const glm::vec3& pos);
 		void setOrientation(const glm::quat& ori);
@@ -30,5 +31,6 @@ class Player {
 		float animationTime;
 		float currentAnimationSpeed;
 		float baseSpeed;
+		glm::vec3 color;
 
 };
