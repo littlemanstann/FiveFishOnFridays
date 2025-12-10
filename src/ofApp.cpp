@@ -203,10 +203,14 @@ void ofApp::draw() {
 
 	//Game Over Screen
 	if (cam.isDead) {
-		for (int i = 0; i < quad.getNumVertices(); i++) {
-			quad.setColor(i, ofFloatColor(1.0, 0.0, 0.0, 1.0)); // red
-		}
-		quad.draw();
+		ofSetColor(0, 0, 0);
+		ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+		
+		ofSetColor(255, 255, 255);
+		string str;
+		str += "FPS: " + ofToString(ofGetFrameRate(), 1) + "\n\n";
+		ofDrawBitmapString(str, 20, 20);
+		
 	}
 	
 }
