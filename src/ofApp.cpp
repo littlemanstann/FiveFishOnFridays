@@ -54,6 +54,7 @@ void ofApp::setup() {
 	ofLoadImage(blankTexture, "textures/blank.png");
 
 	//Setup Interactable NPC
+
 	NPC1.set(1, 2);
 	NPC1.move(25, 25, -2);
 	posOfInteractableObjs.push_back(NPC1.getPosition());
@@ -94,8 +95,8 @@ void ofApp::setup() {
 	}
 
 	// SETUP: water droplets
-	waterDroplets.push_back(WaterDroplet(400.0f, glm::vec3(0., 0, 0.), glm::vec3(0.24, 0.37, 0.56)));
-	waterDroplets.push_back(WaterDroplet(250.0f, glm::vec3(500., 250., -255.), glm::vec3(0.345, 0.635, 0.647)));
+	waterDroplets.push_back(WaterDroplet(200.0f, glm::vec3(0., 0, 0.), glm::vec3(0.24, 0.37, 0.56)));
+	waterDroplets.push_back(WaterDroplet(125.0f, glm::vec3(500., 250., -255.), glm::vec3(0.345, 0.635, 0.647)));
 }
 
 //--------------------------------------------------------------
@@ -145,12 +146,12 @@ void ofApp::update() {
 void ofApp::draw() {
 
 	// ------------ Lighting pass: Save the lighting pass to "fboLighting" -===========
-	ofEnableDepthTest();
+	
 	renderScene(&shader, &fboLighting);
 
 	// ------------ Depth pass: Save the depth pass to "fboLDepth" -===========
 	renderScene(&shaderDepth, &fboLDepth);
-	ofDisableDepthTest();
+	
 
 	// ---------- Second pass: Draw the scene with an additional shader if you are dashing --==========
 
@@ -173,7 +174,6 @@ void ofApp::draw() {
 
 	if (inWater) { 
 		tempShaderTexture = fboLDepth.getTexture();
-		//tempShaderTexture = blankTexture;
 	} else {
 		tempShaderTexture = blankTexture;
 	}
@@ -200,6 +200,14 @@ void ofApp::draw() {
 	}
 
 	dialogue.draw();
+
+	//Game Over Screen
+	if (cam.isDead) {
+		for (int i = 0; i < quad.getNumVertices(); i++) {
+			quad.setColor(i, ofFloatColor(1.0, 0.0, 0.0, 1.0)); // red
+		}
+		quad.draw();
+	}
 	
 }
 
@@ -223,6 +231,16 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform1i("texBool", 0);
 	myShader->setUniform1i("brightBool", 0);
 
+	//Draw Skybox
+	ofDisableDepthTest();
+	myShader->setUniformMatrix4f("worldMatrix", skyboxModel.getModelMatrix());
+	myShader->setUniform1i("texBool", 1);
+	myShader->setUniform1i("brightBool", 1);
+	skyboxTexture.bind();
+	skyboxModel.getMesh(0).draw();
+	skyboxTexture.unbind();
+	ofEnableDepthTest();
+
 	//Draw Player
 	myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
 	myShader->setUniform1i("texBool", 1);
@@ -243,12 +261,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	groundTexture.unbind();
 	*/
 
-	myShader->setUniformMatrix4f("worldMatrix", skyboxModel.getModelMatrix());
-	myShader->setUniform1i("texBool", 1);
-	myShader->setUniform1i("brightBool", 1);
-	skyboxTexture.bind();
-	skyboxModel.getMesh(0).draw();
-	skyboxTexture.unbind();
+	
 
 	//// Draw World Water Droplets
 	for (auto & droplet : waterDroplets) {
@@ -266,11 +279,15 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform1i("brightBool", 1);
 	particleEmitter->draw();	
 
+
+
 	myShader->end();
 
 	cam.end();
 
 	myFbo->end();
+
+	ofDisableDepthTest();
 
 }
 

@@ -33,6 +33,9 @@ public:
 	bool isTalking = false;
 	// Enable/Disable gravity effect on camera
 	void setGravity(bool gravity);
+
+	//Game Over Screen
+	bool isDead = false;
 	
 
 private:
@@ -68,4 +71,7 @@ private:
 	glm::vec3 gravityVel;
 	float GRAVITY = -9.8f;
 	bool applyGravity = false;
+	
+	
+
 };

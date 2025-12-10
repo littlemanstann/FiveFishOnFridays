@@ -103,8 +103,8 @@ void MyCustomCamera::update(float deltaTime) {
 		position += gravityVel * deltaTime;
 	}
 	else {
-		position = glm::vec3(0, 0, 0);
-		targetPosition = glm::vec3(0, 0, 0);
+		canMoveFlag = false;
+		isDead = true;
 		
 	}
 	//position.y = fmax(GROUND_PLANE, position.y);
