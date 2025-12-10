@@ -44,6 +44,7 @@ void ofApp::setup() {
 	ofLoadImage(groundTexture, "textures/sand.jpg");
 	groundTexture.generateMipmap();
 
+	//Setup skybox
 	skyboxModel.load("models/skybox.glb");
 	skyboxModel.enableNormals();
 	skyboxModel.setScale(20, -20, -20);
@@ -51,17 +52,41 @@ void ofApp::setup() {
 	ofLoadImage(skyboxTexture, "textures/skyboxClouds.png");
 	skyboxTexture.generateMipmap();
 
+	//Setup Shader Outside Bubble Depth Map Texture (white image)
 	ofLoadImage(blankTexture, "textures/blank.png");
 
-	// Setup environmental objects
+	//Setup Assortment of Models around the world
 	tardigrade.load("models/tardigrade.glb");
 	tardigrade.enableNormals();
-	tardigrade.setScale(10, -10, -10);
-	tardigrade.setPosition(0, GROUND_PLANE + 1, 0);
-	// and more
+	tardigrade.setScale(0.02, -0.02, -0.02);
+	tardigrade.setPosition(6, 4, 0);
+
+	amoebaGreen1.load("models/amoebaGreen1.glb");
+	amoebaGreen1.enableNormals();
+	amoebaGreen1.setScale(0.02, -0.02, -0.02);
+	amoebaGreen1.setPosition(0, 8, 0);
+
+	//mossPatch.load("models/moss");
+	//mossPatch.enableNormals();
+	//mossPatch.setScale(0.02, -0.02, -0.02);
+	//mossPatch.setPosition(0, 0, 6);
+
+	amoebaBlue1.load("models/amoebaGreen1.glb");
+	amoebaBlue1.enableNormals();
+	amoebaBlue1.setScale(0.02, -0.02, -0.02);
+	amoebaBlue1.setPosition(-6, 0, 0);
+
+	amoebaBlue2.load("models/amoebaGreen1.glb");
+	amoebaBlue2.enableNormals();
+	amoebaBlue2.setScale(0.02, -0.02, -0.02);
+	amoebaBlue2.setPosition(0, 0, 6);
+
+	rockPatch.load("models/rocks.glb");
+	rockPatch.enableNormals();
+	rockPatch.setScale(0.02, -0.02, -0.02);
+	rockPatch.setPosition(0, -4, 0);
 
 	//Setup Interactable NPC
-
 	fish1 = new Player();
 	fish1->setPosition(glm::vec3(25, 45, -30));
 	posOfInteractableObjs.push_back(glm::vec3(25, 45, -30));
@@ -81,7 +106,7 @@ void ofApp::setup() {
 	fish3 = new Player();
 	fish3->setPosition(glm::vec3(12, 66, 32));
 	posOfInteractableObjs.push_back(glm::vec3(12, 66, 32));
-	msgsOfInteractableObjs.push_back({ "I miss my wife",
+	msgsOfInteractableObjs.push_back({ "I miss ma wife...",
 		});
 
 
@@ -95,6 +120,7 @@ void ofApp::setup() {
 		"I am sad that today is friday...",
 		"I accept that today is friday" });
 	dialogue.setup(100, 400, 600, 150);
+
 
 	rockSalt.load("RockSalt-Regular.ttf", 64, true, true);
 	calibri.setLineHeight(18.0f);
@@ -374,9 +400,66 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	skyboxTexture.unbind();
 	ofEnableDepthTest();
 
+	//Draw Environmental Objects
+	myShader->setUniformMatrix4f("worldMatrix", tardigrade.getModelMatrix());
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < tardigrade.getNumMeshes(); i++) {
+		if(i % 2 == 0) {
+			myShader->setUniform3f("objectColor", glm::vec3(0.97, 0.4, 0.98));
+		}
+		else{
+			myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.2, 0.8));
+		}
+		tardigrade.getMesh(i).draw();
+	}
+
+	myShader->setUniformMatrix4f("worldMatrix", amoebaGreen1.getModelMatrix());
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < amoebaGreen1.getNumMeshes(); i++) {
+		myShader->setUniform3f("objectColor", glm::vec3(0.25, 0.8 + 0.2 * i, 0.4));
+		amoebaGreen1.getMesh(i).draw();
+	}
+
+	//myShader->setUniformMatrix4f("worldMatrix", mossPatch.getModelMatrix());
+	//myShader->setUniform3f("objectColor", glm::vec3(0.8, 0.3, 2.0));
+	//myShader->setUniform1i("texBool", 0);
+	//myShader->setUniform1i("brightBool", 0);
+	//for (int i = 0; i < mossPatch.getNumMeshes(); i++) {
+	//	mossPatch.getMesh(i).draw();
+	//}
+
+	myShader->setUniformMatrix4f("worldMatrix", amoebaBlue1.getModelMatrix());
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < amoebaBlue1.getNumMeshes(); i++) {
+		myShader->setUniform3f("objectColor", glm::vec3(0.25, 0.6, 0.8 + 0.2*i));
+		amoebaBlue1.getMesh(i).draw();
+	}
+
+	myShader->setUniformMatrix4f("worldMatrix", amoebaBlue2.getModelMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.8, 0.3, 2.0));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < amoebaBlue2.getNumMeshes(); i++) {
+		myShader->setUniform3f("objectColor", glm::vec3(0.25, 0.3, 0.8 + 0.2 * i));
+		amoebaBlue2.getMesh(i).draw();
+	}
+
+	myShader->setUniformMatrix4f("worldMatrix", rockPatch.getModelMatrix());
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < rockPatch.getNumMeshes(); i++) {
+		myShader->setUniform3f("objectColor", glm::vec3(i * 0.08 + 0.5, i * 0.08 + 0.5, i * 0.08 + 0.5));
+		rockPatch.getMesh(i).draw();
+	}
+
+
 	//Draw Player
 	myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
 	myShader->setUniform1i("texBool", 1);
+
 	cam.drawMeShaded(myShader);
 
 	//Draw Cone (npc)
@@ -384,16 +467,6 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	NPC1.draw();
-
-	//Draw environmental objects
-	myShader->setUniformMatrix4f("worldMatrix", tardigrade.getModelMatrix());
-	myShader->setUniform3f("objectColor", glm::vec3(0.8, 0.8, 1.0));
-	myShader->setUniform1i("texBool", 0);
-	//for (int i = 0; i < tardigrade.getNumMeshes(); i++) {
-	//	//texture.bind();
-	//	tardigrade.getMesh(i).draw();
-	//	//texture.unbind();
-	//}
 
 	/*
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
