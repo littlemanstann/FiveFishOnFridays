@@ -136,4 +136,6 @@ public:
 
 	// Hierarchical Fish Models
 	Player* fish1;
+	Player* fish2;
+	Player* fish3;
 };

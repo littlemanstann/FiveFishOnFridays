@@ -25,6 +25,7 @@ private:
     int currentMessageIndex;
     string displayedText;
     int charIndex;
+    int lineLength;
     float charDelay;
     float lastCharTime;
     bool textComplete;

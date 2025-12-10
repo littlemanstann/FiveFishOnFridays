@@ -10,6 +10,7 @@ DialogueBox::DialogueBox() {
     currentMessageIndex = 0;
     charIndex = 0;
     lastCharTime = 0;
+    lineLength = 0;
 }
 
 void DialogueBox::setup(float x, float y, float width, float height) {
@@ -35,8 +36,24 @@ void DialogueBox::update() {
 
         if (currentTime - lastCharTime >= charDelay) {
             if (charIndex < messages[currentMessageIndex].length()) {
-                displayedText += messages[currentMessageIndex][charIndex];
+                
+                
                 charIndex++;
+                lineLength++;
+                if (messages[currentMessageIndex][charIndex] == ' ') {
+                    if (lineLength > 50) {
+                        displayedText += "\n";
+                        lineLength = 0;
+                    }
+                    else {
+                        displayedText += messages[currentMessageIndex][charIndex];
+                    }
+                }
+                else {
+                    displayedText += messages[currentMessageIndex][charIndex];
+                }
+
+                
                 lastCharTime = currentTime;
             }
             else {
@@ -73,6 +90,7 @@ void DialogueBox::setDialogue(vector<string> msgs, std::function<void(MyCustomCa
     messages = msgs;
     currentMessageIndex = 0;
     charIndex = 0;
+    lineLength = 0;
     displayedText = "";
     textComplete = false;
     dialogueActive = true;
@@ -107,6 +125,7 @@ void DialogueBox::keyPressed(int key) {
 void DialogueBox::advanceToNextMessage() {
     currentMessageIndex++;
     charIndex = 0;
+    lineLength = 0;
     displayedText = "";
     textComplete = false;
     lastCharTime = ofGetElapsedTimef();
@@ -114,7 +133,25 @@ void DialogueBox::advanceToNextMessage() {
 }
 
 void DialogueBox::finishCurrentMessage() {
-    displayedText = messages[currentMessageIndex];
+    displayedText = "";
+    for (size_t i = 0; i < messages[currentMessageIndex].length(); i++) {
+        char c = messages[currentMessageIndex][i];
+        displayedText += c;
+        lineLength++;
+
+        // If we hit a space and line is longer than 50, insert newline
+        if (c == ' ' && lineLength >= 50) {
+            displayedText += "\n";
+            lineLength = 0; // reset line length after breaking
+        }
+
+        // Optional: force break for extremely long words
+        if (lineLength >= 70) {
+            displayedText += "\n";
+            lineLength = 0;
+        }
+    }
+    
     charIndex = messages[currentMessageIndex].length();
     textComplete = true;
     animalCrossingSFX.stop();

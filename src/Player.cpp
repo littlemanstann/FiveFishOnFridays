@@ -22,7 +22,7 @@ void Player::setPosition(const glm::vec3& pos) {
 void Player::update(float velocity) {
 	// Animate fish swimming based on velocity
 	if (velocity > 0) {
-		meshObj[2].setPosition(glm::vec3(0, 5, 0));
+		//meshObj[2].setPosition(pos);
 
 		/*
 		// Head part

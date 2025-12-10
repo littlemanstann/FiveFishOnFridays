@@ -55,6 +55,30 @@ void ofApp::setup() {
 
 	//Setup Interactable NPC
 
+	fish1 = new Player();
+	fish1->setPosition(glm::vec3(25, 45, -30));
+	posOfInteractableObjs.push_back(glm::vec3(25, 45, -30));
+	msgsOfInteractableObjs.push_back({ "Do you believe it to be a privelege to live in fear of whats to come? Even if you know its coming?",
+		"You must speak with precision and intent. If you don't know don't make up an answer for that wuold be your biggest shame.",
+		"Far greater than any answer you could give from the heart.",
+		"For man fears not by choice but by fate and so you too are bound by knowledge and the regret of ignorance. For would it have been better to now know at all if it was inevitable?"});
+
+	fish2 = new Player();
+	fish2->setPosition(glm::vec3(80, 0, 60));
+	posOfInteractableObjs.push_back(glm::vec3(80, 0, 60));
+	msgsOfInteractableObjs.push_back({ "Hark! For the reckoning is here. A day of respite has become the day for tribulations. May your past be forgotten and your future never-present.",
+		"You there! Do you think yourself forgiven?",
+		"Who can decide what sins weigh the heaviest and who without sin can forgive them? And so are we all doomed?",
+		});
+
+	fish3 = new Player();
+	fish3->setPosition(glm::vec3(12, 66, 32));
+	posOfInteractableObjs.push_back(glm::vec3(12, 66, 32));
+	msgsOfInteractableObjs.push_back({ "I miss my wife",
+		});
+
+
+
 	NPC1.set(1, 2);
 	NPC1.move(25, 25, -2);
 	posOfInteractableObjs.push_back(NPC1.getPosition());
@@ -98,8 +122,7 @@ void ofApp::setup() {
 		t->cylinders = t->createWireframeCylinders(t->vertices);
 	}
 
-	// SETUP: fish NPCs
-	fish1 = new Player();
+	
 	
 
 	// SETUP: water droplets
@@ -201,6 +224,8 @@ void ofApp::update() {
 	}
 
 	fish1->update(30);
+	fish2->update(30);
+	fish3->update(30);
 }
 
 //--------------------------------------------------------------
@@ -331,7 +356,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniformMatrix4f("worldMatrix", NPC1.getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
-	//NPC1.draw();
+	NPC1.draw();
 	/*
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
 	myShader->setUniformMatrix4f("worldMatrix", groundModel.getGlobalTransformMatrix());
@@ -345,6 +370,8 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	// Draw Fish NPCs
 	// Move Fish NPCs
 	fish1->draw(myShader);
+	fish2->draw(myShader);
+	fish3->draw(myShader);
 
 	for (auto & p : points) {
 		p->draw(myShader, cam.myCone.getGlobalPosition());
