@@ -69,19 +69,29 @@ void ofApp::setup() {
 	tardigrade.load("models/tardigrade.glb");
 	tardigrade.enableNormals();
 	tardigrade.setScale(0.02, -0.02, -0.02);
-	tardigrade.setPosition(6, 4, 0);
+	tardigrade.setPosition(500., 280., -255.);
+
+	tardigrade2.load("models/tardigrade.glb");
+	tardigrade2.enableNormals();
+	tardigrade2.setScale(0.03, -0.03, -0.03);
+	tardigrade2.setPosition(520., 200., -280.);
 
 	amoebaGreen1.load("models/amoebaGreen1.glb");
 	amoebaGreen1.enableNormals();
 	amoebaGreen1.setScale(0.02, -0.02, -0.02);
-	amoebaGreen1.setPosition(0, 8, 0);
+	amoebaGreen1.setPosition(400., 220., -160);
 
-	//mossPatch.load("models/moss");
-	//mossPatch.enableNormals();
-	//mossPatch.setScale(0.02, -0.02, -0.02);
-	//mossPatch.setPosition(0, 0, 6);
+	amoebaGreen2.load("models/amoebaGreen1.glb");
+	amoebaGreen2.enableNormals();
+	amoebaGreen2.setScale(0.03, -0.03, -0.03);
+	amoebaGreen2.setPosition(500., 250., -255.);
 
-	amoebaBlue1.load("models/amoebaGreen1.glb");
+	mossPatch.load("models/square_moss");
+	mossPatch.enableNormals();
+	mossPatch.setScale(0.02, -0.02, -0.02);
+	mossPatch.setPosition(0, 0, 6);
+
+	amoebaBlue1.load("models/blob2.glb");
 	amoebaBlue1.enableNormals();
 	amoebaBlue1.setScale(0.02, -0.02, -0.02);
 	amoebaBlue1.setPosition(-6, 0, 0);
@@ -89,12 +99,12 @@ void ofApp::setup() {
 	amoebaBlue2.load("models/amoebaGreen1.glb");
 	amoebaBlue2.enableNormals();
 	amoebaBlue2.setScale(0.02, -0.02, -0.02);
-	amoebaBlue2.setPosition(0, 0, 6);
+	amoebaBlue2.setPosition(10, 5, 6);
 
 	rockPatch.load("models/rocks.glb");
 	rockPatch.enableNormals();
 	rockPatch.setScale(0.02, -0.02, -0.02);
-	rockPatch.setPosition(0, -4, 0);
+	rockPatch.setPosition(0, -20, 0);
 
 	//Setup Interactable NPC
 	fish1 = new Player();
@@ -440,6 +450,18 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 		}
 		tardigrade.getMesh(i).draw();
 	}
+	myShader->setUniformMatrix4f("worldMatrix", tardigrade2.getModelMatrix());
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < tardigrade2.getNumMeshes(); i++) {
+		if (i % 2 == 0) {
+			myShader->setUniform3f("objectColor", glm::vec3(0.97, 0.4, 0.98));
+		}
+		else {
+			myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.2, 0.8));
+		}
+		tardigrade2.getMesh(i).draw();
+	}
 
 	myShader->setUniformMatrix4f("worldMatrix", amoebaGreen1.getModelMatrix());
 	myShader->setUniform1i("texBool", 0);
@@ -448,14 +470,21 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 		myShader->setUniform3f("objectColor", glm::vec3(0.25, 0.8 + 0.2 * i, 0.4));
 		amoebaGreen1.getMesh(i).draw();
 	}
+	myShader->setUniformMatrix4f("worldMatrix", amoebaGreen2.getModelMatrix());
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < amoebaGreen2.getNumMeshes(); i++) {
+		myShader->setUniform3f("objectColor", glm::vec3(0.25, 0.8 + 0.2 * i, 0.4));
+		amoebaGreen2.getMesh(i).draw();
+	}
 
-	//myShader->setUniformMatrix4f("worldMatrix", mossPatch.getModelMatrix());
-	//myShader->setUniform3f("objectColor", glm::vec3(0.8, 0.3, 2.0));
-	//myShader->setUniform1i("texBool", 0);
-	//myShader->setUniform1i("brightBool", 0);
-	//for (int i = 0; i < mossPatch.getNumMeshes(); i++) {
-	//	mossPatch.getMesh(i).draw();
-	//}
+	myShader->setUniformMatrix4f("worldMatrix", mossPatch.getModelMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.8, 0.3, 2.0));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 0);
+	for (int i = 0; i < mossPatch.getNumMeshes(); i++) {
+		mossPatch.getMesh(i).draw();
+	}
 
 	myShader->setUniformMatrix4f("worldMatrix", amoebaBlue1.getModelMatrix());
 	myShader->setUniform1i("texBool", 0);
