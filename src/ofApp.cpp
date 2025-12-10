@@ -95,9 +95,25 @@ void ofApp::setup() {
 
 
 	//Setup Emitter
-	particleEmitter = std::make_unique<BubbleEmitter>(cam);
-	particleEmitter->setPosition(glm::vec3(0, 0, 0));
-	particleEmitter->setSize(1); // cube size
+	patricleEmitter1 = std::make_unique<BubbleEmitter>(cam);
+	patricleEmitter1->setPosition(glm::vec3(500, 200, -255));
+	patricleEmitter1->setSize(5); // cube size
+
+	patricleEmitter2 = std::make_unique<BubbleEmitter>(cam);
+	patricleEmitter2->setPosition(glm::vec3(400, 200, -255));
+	patricleEmitter2->setSize(5); // cube size
+
+	patricleEmitter3 = std::make_unique<BubbleEmitter>(cam);
+	patricleEmitter3->setPosition(glm::vec3(600, 200, -255));
+	patricleEmitter3->setSize(5); // cube size
+
+	patricleEmitter4 = std::make_unique<BubbleEmitter>(cam);
+	patricleEmitter4->setPosition(glm::vec3(500, 100, -255));
+	patricleEmitter4->setSize(5); // cube size
+
+	patricleEmitter5 = std::make_unique<BubbleEmitter>(cam);
+	patricleEmitter5->setPosition(glm::vec3(500, 300, -255));
+	patricleEmitter5->setSize(5); // cube size
 
 	// Setup voronoi mesh
 
@@ -211,7 +227,11 @@ void ofApp::update() {
 		}
 	}
 
-	if (particleEmitter) particleEmitter->update(ofGetLastFrameTime());
+	if (patricleEmitter1) patricleEmitter1->update(ofGetLastFrameTime());
+	if (patricleEmitter2) patricleEmitter2->update(ofGetLastFrameTime());
+	if (patricleEmitter3) patricleEmitter3->update(ofGetLastFrameTime());
+	if (patricleEmitter4) patricleEmitter4->update(ofGetLastFrameTime());
+	if (patricleEmitter5) patricleEmitter5->update(ofGetLastFrameTime());
 
 	skyboxModel.setPosition(cam.getPlayerPosition().x, cam.getPlayerPosition().y, cam.getPlayerPosition().z);
 
@@ -395,11 +415,35 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 
 	
 	//Draw Bubble Shader (draw last), it breaks it
-	myShader->setUniformMatrix4f("worldMatrix", particleEmitter->getBox().getGlobalTransformMatrix());
+	myShader->setUniformMatrix4f("worldMatrix", patricleEmitter1->getBox().getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	myShader->setUniform1i("brightBool", 1);
-	particleEmitter->draw();	
+	patricleEmitter1->draw();	
+
+	/*myShader->setUniformMatrix4f("worldMatrix", patricleEmitter2->getBox().getGlobalTransformMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 1);
+	patricleEmitter2->draw();
+
+	myShader->setUniformMatrix4f("worldMatrix", patricleEmitter3->getBox().getGlobalTransformMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 1);
+	patricleEmitter3->draw();
+
+	myShader->setUniformMatrix4f("worldMatrix", patricleEmitter4->getBox().getGlobalTransformMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 1);
+	patricleEmitter4->draw();
+
+	myShader->setUniformMatrix4f("worldMatrix", patricleEmitter5->getBox().getGlobalTransformMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
+	myShader->setUniform1i("texBool", 0);
+	myShader->setUniform1i("brightBool", 1);
+	patricleEmitter5->draw();*/
 
 	
 

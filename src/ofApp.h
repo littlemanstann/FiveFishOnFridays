@@ -99,7 +99,11 @@ public:
 
 
 	// [Particles and Emitters]
-	std::unique_ptr<BubbleEmitter> particleEmitter;
+	std::unique_ptr<BubbleEmitter> patricleEmitter1;
+	std::unique_ptr<BubbleEmitter> patricleEmitter2;
+	std::unique_ptr<BubbleEmitter> patricleEmitter3;
+	std::unique_ptr<BubbleEmitter> patricleEmitter4;
+	std::unique_ptr<BubbleEmitter> patricleEmitter5;
 	vector<glm::vec3> particlePositions;
 	vector<glm::vec3> particleNormals;
 	ofShader particleShader;
