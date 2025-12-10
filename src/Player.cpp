@@ -88,16 +88,22 @@ void Player::draw(ofShader* myShader, ofTexture* fishTexture) {
 	for (int i = 0; i < 5; i++) {
 		myShader->setUniformMatrix4f("worldMatrix", meshObj[i].getMatrix());
 		myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
-		myShader->setUniform1i("texBool", 0);
-		// BROKEN: Adding texture???
-		/*
-		for (int j = 0; j < model[i].getNumMeshes(); j++) {
+
+		// Bind texture and set uniform
+		if (fishTexture != nullptr) {
 			fishTexture->bind();
-			model[i].getMesh(j).draw();
+			myShader->setUniformTexture("tex", *fishTexture, 0);
+			myShader->setUniform1i("texBool", 1); // Enable texture in shader
+		}
+		else {
+			myShader->setUniform1i("texBool", 0); // No texture
+		}
+
+		meshObj[i].draw();
+
+		// Unbind texture
+		if (fishTexture != nullptr) {
 			fishTexture->unbind();
 		}
-		*/
-		meshObj[i].draw();
 	}
 }
-
