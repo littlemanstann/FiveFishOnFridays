@@ -35,7 +35,7 @@ void BubbleEmitter::update(float dt) {
             b.age = 0;
             b.lifetime = ofRandom(2, 4);
             b.phase = ofRandom(TWO_PI);
-            b.vel = glm::vec3(0, ofRandom(0.5, 1.0), 0);
+            b.vel = glm::vec3(0, ofRandom(0.5, 5.0), 0);
         }
 
         b.pos += b.vel * dt;
@@ -51,7 +51,7 @@ void BubbleEmitter::update(float dt) {
 }
 
 void BubbleEmitter::draw() {
-    box.draw();
+    //box.draw();
     ofMatrix4x4 modelMatrix = box.getGlobalTransformMatrix();
     ofMatrix4x4 viewMatrix = cam.getModelViewProjectionMatrix();
     ofMatrix4x4 mvp = viewMatrix;
@@ -60,7 +60,7 @@ void BubbleEmitter::draw() {
     bubbleShader.setUniformTexture("texture0", fire.getTextureReference(), 1);
     bubbleShader.setUniform1f("t", ofGetElapsedTimef()); // time
     bubbleShader.setUniformMatrix4f("MVP", mvp);
-    bubbleShader.setUniform1f("pSize", 2);
+    bubbleShader.setUniform1f("pSize", 5);
 
     vbo.draw(GL_POINTS, 0, bubbles.size());
 
