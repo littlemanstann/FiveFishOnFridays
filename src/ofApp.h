@@ -97,6 +97,7 @@ public:
 	// [FBO's]
 	ofFbo fboLighting;
 	ofFbo fboLDepth;
+	ofFbo fboParticle;
 	ofMesh quad;
 
 	// [Light Information]

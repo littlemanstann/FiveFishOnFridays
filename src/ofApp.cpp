@@ -27,7 +27,17 @@ void ofApp::setup() {
 	settings.useDepth = TRUE;
 	fboLighting.allocate(settings);
 	fboLDepth.allocate(settings);
+	
 	makeScreenQuad(); //setting up the quad that will be rendered in the shaderFBO pass
+
+	ofFbo::Settings s;
+	s.width = ofGetWidth();
+	s.height = ofGetHeight();
+	s.internalformat = GL_RGBA;     // IMPORTANT: includes alpha channel
+	s.useDepth = false;
+	s.useStencil = false;
+
+	fboParticle.allocate(s);
 
 
 	//Setup the GLFW Window that contains functions to hide and recenter the mouse
@@ -284,6 +294,13 @@ void ofApp::update() {
 //--------------------------------------------------------------
 void ofApp::draw() {
 
+	fboParticle.begin();
+	ofClear(0, 0, 0, 0);
+	cam.begin();
+	patricleEmitter1->draw();
+	cam.end();
+	fboParticle.end();
+
 	// ------------ Lighting pass: Save the lighting pass to "fboLighting" -===========
 	
 	renderScene(&shader, &fboLighting);
@@ -315,7 +332,7 @@ void ofApp::draw() {
 	} else {
 		tempShaderTexture = blankTexture;
 	}
-
+	fboParticle.draw(0, 0);
 	//dashing shader
 	if (cam.dash) {
 		speedShader.begin();
@@ -365,6 +382,7 @@ void ofApp::draw() {
 	}
 	//ofDisableDepthTest();
 	dialogue.draw();
+	
 	//ofEnableDepthTest();
 	
 }
@@ -510,7 +528,7 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	myShader->setUniform1i("brightBool", 1);
-	patricleEmitter1->draw();	
+		
 
 	/*myShader->setUniformMatrix4f("worldMatrix", patricleEmitter2->getBox().getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
