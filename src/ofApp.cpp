@@ -53,6 +53,13 @@ void ofApp::setup() {
 
 	ofLoadImage(blankTexture, "textures/blank.png");
 
+	// Setup environmental objects
+	tardigrade.load("models/tardigrade.glb");
+	tardigrade.enableNormals();
+	tardigrade.setScale(10, -10, -10);
+	tardigrade.setPosition(0, GROUND_PLANE + 1, 0);
+	// and more
+
 	//Setup Interactable NPC
 
 	fish1 = new Player();
@@ -370,13 +377,24 @@ void ofApp::renderScene(ofShader * myShader, ofFbo * myFbo) {
 	//Draw Player
 	myShader->setUniformMatrix4f("worldMatrix", cam.getMyGlobalTransformMatrix());
 	myShader->setUniform1i("texBool", 1);
-	cam.drawMeShaded();
+	cam.drawMeShaded(myShader);
 
 	//Draw Cone (npc)
 	myShader->setUniformMatrix4f("worldMatrix", NPC1.getGlobalTransformMatrix());
 	myShader->setUniform3f("objectColor", glm::vec3(0.5, 0.08, 0.90));
 	myShader->setUniform1i("texBool", 0);
 	NPC1.draw();
+
+	//Draw environmental objects
+	myShader->setUniformMatrix4f("worldMatrix", tardigrade.getModelMatrix());
+	myShader->setUniform3f("objectColor", glm::vec3(0.8, 0.8, 1.0));
+	myShader->setUniform1i("texBool", 0);
+	//for (int i = 0; i < tardigrade.getNumMeshes(); i++) {
+	//	//texture.bind();
+	//	tardigrade.getMesh(i).draw();
+	//	//texture.unbind();
+	//}
+
 	/*
 	//Draw Ground, if you want to add a texture, you must bind and unbind it around the draw.
 	myShader->setUniformMatrix4f("worldMatrix", groundModel.getGlobalTransformMatrix());

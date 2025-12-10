@@ -9,7 +9,7 @@ public:
     MyCustomCamera();
 
     void update(float deltaTime);
-	void drawMeShaded();
+	void drawMeShaded(ofShader* myShader);
 	void camRotate(glm::vec2 mouseInput);
 
 	glm::mat4 getMyGlobalTransformMatrix();
@@ -41,7 +41,8 @@ public:
 	
 
 private:
-	ofxAssimpModelLoader myPlayer;
+	//ofxAssimpModelLoader myPlayer;
+	Player myPlayer;
 	ofTexture texture;
 
     glm::vec3 BASE_UP;

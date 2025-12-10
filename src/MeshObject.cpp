@@ -35,6 +35,14 @@ void MeshObject::setRotation(float angleDeg, const glm::vec3& axis) {
 	matrix = glm::rotate(matrix, glm::radians(angleDeg), axis);
 }
 
+// Set rotation by quaternion
+void MeshObject::setRotation(glm::quat orientation) {
+	glm::mat4 rotMat = glm::mat4_cast(orientation);
+	rotationMatrix = rotMat;
+
+	matrix = matrix * rotMat;
+}
+
 // Set rotation matrix by angle (degrees) around axis (uses RotationMatrix variable)
 void MeshObject::setRotationMatrix(float angleDeg, const glm::vec3& axis) {
 	rotationAngle += angleDeg;
