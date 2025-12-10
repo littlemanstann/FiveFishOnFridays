@@ -65,6 +65,10 @@ void ofApp::setup() {
 		"I accept that today is friday" });
 	dialogue.setup(100, 400, 600, 150);
 
+	rockSalt.load("RockSalt-Regular.ttf", 64, true, true);
+	calibri.setLineHeight(18.0f);
+	calibri.setLetterSpacing(1.037);
+
 
 	//Setup Emitter
 	particleEmitter = std::make_unique<BubbleEmitter>(cam);
@@ -199,7 +203,7 @@ void ofApp::draw() {
 		shaderFBO.end();
 	}
 
-	dialogue.draw();
+	
 
 	//Game Over Screen
 	if (cam.isDead) {
@@ -207,11 +211,29 @@ void ofApp::draw() {
 		ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
 		
 		ofSetColor(255, 255, 255);
-		string str;
-		str += "FPS: " + ofToString(ofGetFrameRate(), 1) + "\n\n";
-		ofDrawBitmapString(str, 20, 20);
+		string text = "GAME OVER";
+
+		ofRectangle bbox = rockSalt.getStringBoundingBox(text, 0, 0);
+
+		float x = (ofGetWidth() - bbox.getWidth()) * 0.5;
+		//float y = (ofGetHeight() - bbox.getHeight()) * 0.5 + bbox.getHeight();
+
+		rockSalt.drawString(text, x, ofGetHeight()/2 - 64);
+		if (!dialogue.isActive()) {
+			cam.isTalking = true;
+			dialogue.setDialogue({ "You were so close yet so far...", "All this struggle and it is still Friday. You can't stop now can you?" , "Press 'Space' to continue" }, [](MyCustomCamera* cam) {printf("callback");}, &cam);
+		}
+		else {
+			if (dialogue.isComplete()) {
+				
+			}
+		}
+		
 		
 	}
+	//ofDisableDepthTest();
+	dialogue.draw();
+	//ofEnableDepthTest();
 	
 }
 

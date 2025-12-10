@@ -13,6 +13,7 @@ public:
 
 	glm::mat4 getMyGlobalTransformMatrix();
 	glm::vec3 getPlayerPosition() { return myCone.getPosition(); }
+	void setPlayerPosition(glm::vec3 pos) { position = pos; targetPosition = pos; }
 	float getSpeed() const { return glm::length(move); }
 
     glm::vec3 getqForward();

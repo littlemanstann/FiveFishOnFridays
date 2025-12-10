@@ -19,9 +19,9 @@
 #define GROUND_PLANE -200
 // This is the config for the voronoi mesh (Jansen)
 
-#define BOUND_X 200
-#define BOUND_Y 200
-#define BOUND_Z 200
+#define BOUND_X 150
+#define BOUND_Y 150
+#define BOUND_Z 150
 #define DELTA 1
 #define NUM_POINTS 15
 
@@ -130,6 +130,9 @@ public:
 
 	// World Water Droplets
 	vector<WaterDroplet> waterDroplets;
+
+	// [Game Over Screen]
+	ofTrueTypeFont rockSalt;
 
 
 };

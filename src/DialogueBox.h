@@ -1,5 +1,6 @@
 #pragma once
 #include "ofMain.h"
+#include "MyCustomCamera.h"
 
 class DialogueBox {
 public:
@@ -8,7 +9,7 @@ public:
     void setup(float x, float y, float width, float height);
     void update();
     void draw();
-    void setDialogue(vector<string> msgs);
+    void setDialogue(vector<string> msgs, std::function<void(MyCustomCamera*)> onComplete = nullptr, MyCustomCamera* cam = nullptr);
     void keyPressed(int key);
 
     bool isActive();
@@ -32,6 +33,10 @@ private:
     // Text properties
     float textPadding;
     float lineHeight;
+
+    // Callback
+    std::function<void(MyCustomCamera*)> onCompleteCallback = nullptr;
+    MyCustomCamera* targetCamera = nullptr;
 
     // SFX
     ofSoundPlayer animalCrossingSFX;

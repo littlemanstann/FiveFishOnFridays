@@ -35,7 +35,7 @@ MyCustomCamera::MyCustomCamera() {
 void MyCustomCamera::update(float deltaTime) {
 	
 	if (isTalking) {
-		printf("isTalking");
+		//printf("isTalking");
 		return;
 	}
     if (!canMoveFlag) {
@@ -103,8 +103,9 @@ void MyCustomCamera::update(float deltaTime) {
 		position += gravityVel * deltaTime;
 	}
 	else {
-		canMoveFlag = false;
 		isDead = true;
+		position = glm::vec3(0, 0, 0);
+		targetPosition = position;
 		
 	}
 	//position.y = fmax(GROUND_PLANE, position.y);

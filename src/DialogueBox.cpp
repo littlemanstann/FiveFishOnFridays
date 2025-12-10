@@ -41,6 +41,7 @@ void DialogueBox::update() {
             }
             else {
                 textComplete = true;
+                
             }
         }
     }
@@ -68,7 +69,7 @@ void DialogueBox::draw() {
     ofDrawBitmapString(displayedText, x + textPadding, y + textPadding + lineHeight);
 }
 
-void DialogueBox::setDialogue(vector<string> msgs) {
+void DialogueBox::setDialogue(vector<string> msgs, std::function<void(MyCustomCamera*)> onComplete, MyCustomCamera* cam) {
     messages = msgs;
     currentMessageIndex = 0;
     charIndex = 0;
@@ -76,6 +77,9 @@ void DialogueBox::setDialogue(vector<string> msgs) {
     textComplete = false;
     dialogueActive = true;
     lastCharTime = ofGetElapsedTimef();
+
+    onCompleteCallback = onComplete;
+    targetCamera = cam;
 }
 
 void DialogueBox::keyPressed(int key) {
@@ -93,6 +97,10 @@ void DialogueBox::keyPressed(int key) {
     else if (currentMessageIndex == messages.size() - 1 && textComplete) {
         dialogueActive = false;
         animalCrossingSFX.stop();
+        if (onCompleteCallback && targetCamera) {
+            onCompleteCallback(targetCamera);
+            targetCamera->isDead = false;
+        }
     }
 }
 
