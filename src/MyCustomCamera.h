@@ -41,7 +41,7 @@ public:
 	
 
 private:
-	Player myPlayer;
+	ofxAssimpModelLoader myPlayer;
 	ofTexture texture;
 
     glm::vec3 BASE_UP;

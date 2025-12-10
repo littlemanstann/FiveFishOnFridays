@@ -23,8 +23,8 @@ MyCustomCamera::MyCustomCamera() {
 
 	myCone.set(1, 3);
 
-	//myPlayer.load("models/FISH.glb");
-	//myPlayer.enableNormals();
+	myPlayer.load("models/FISH.glb");
+	myPlayer.enableNormals();
 
 	ofDisableArbTex();
 	ofLoadImage(texture, "textures/fishTexture.png");
@@ -88,7 +88,7 @@ void MyCustomCamera::update(float deltaTime) {
 	position += getqForward() * speed * speedModifier * deltaTime;
 
 	// Update animation
-	myPlayer.update(1.0);
+	//myPlayer.update(1.0);
 
 	// GRAVITY CHECK:
 	if (applyGravity ) {
@@ -140,14 +140,13 @@ void MyCustomCamera::update(float deltaTime) {
 
 void MyCustomCamera::drawMeShaded() {
 	//you would have to pass a pointer to the shader to do this...
-	/*
 	for (int i = 0; i < myPlayer.getNumMeshes(); i++) {
 		texture.bind();
 		myPlayer.getMesh(i).draw();
 		texture.unbind();
 	}
-	*/
-	myPlayer.draw();
+	
+	//myPlayer.draw();
 }
 glm::mat4 MyCustomCamera::getMyGlobalTransformMatrix() {
 	// 3. GLM QUIRK if you rotate an object back and forth, after enough updates the
