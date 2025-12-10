@@ -58,6 +58,12 @@ public:
 	MyCustomCamera cam;
 	ofPlanePrimitive groundModel;
 	ofxAssimpModelLoader skyboxModel;
+	ofxAssimpModelLoader tardigrade;
+	ofxAssimpModelLoader amoebaGreen1;
+	ofxAssimpModelLoader mossPatch;
+	ofxAssimpModelLoader amoebaBlue1;
+	ofxAssimpModelLoader amoebaBlue2;
+	ofxAssimpModelLoader rockPatch;
 
 	//Textures
 	ofTexture groundTexture;
