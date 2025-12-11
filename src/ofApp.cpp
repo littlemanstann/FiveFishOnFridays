@@ -79,7 +79,7 @@ void ofApp::setup() {
 	amoebaGreen1.load("models/amoebaGreen1.glb");
 	amoebaGreen1.enableNormals();
 	amoebaGreen1.setScale(0.02, -0.02, -0.02);
-	amoebaGreen1.setPosition(400., 220., -160);
+	amoebaGreen1.setPosition(480., 220., -160);
 
 	amoebaGreen2.load("models/amoebaGreen1.glb");
 	amoebaGreen2.enableNormals();
@@ -248,10 +248,10 @@ void ofApp::setup() {
 	tempCol = glm::vec3(0.566, 0.491, 0.788);
 	waterDroplets.push_back(WaterDroplet(27 / 2, glm::vec3(-102, 332, 172), tempCol));
 
-	// Setup Seaweed Ball stuff
+	// Setup Seaweed Ball particle effects
 	for (int i = 0; i < 5; i++) {
 		weed[i] = std::make_unique<SeaweedBall>(cam);
-		weed[i]->setPosition(glm::vec3(500. + (i * 16), 280., -255. + (i * 16)));
+		weed[i]->setPosition(glm::vec3(500. + (i * ofRandom(10, 32)), 270. + ofRandom(10, 32), -255. + (i * ofRandom(10, 32))));
 	}
 }
 
