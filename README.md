@@ -24,6 +24,7 @@ Our fishy Final Group Project submission for COMP 3501! <br>
 **LEFT_SHIFT** or **R** - Toggle dash (move fast) <br>
 **E** - Interact and engage in dialogue with other fish (must be near + facing fish) <br>
 **SPACEBAR** - Continue through dialogue boxes
+**ESC** - Quit the application <br>
 
 ### Game Architecture
 All player movement and camera controls are handled within *MyCustomCamera.cpp*. <br> Hierarchical fish transformations are handled in *Player.cpp*. <br> 
