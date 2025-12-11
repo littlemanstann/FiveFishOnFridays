@@ -23,7 +23,7 @@ Our fishy Final Group Project submission for COMP 3501! <br>
 **S** - Move fish backwards <br>
 **LEFT_SHIFT** or **R** - Toggle dash (move fast) <br>
 **E** - Interact and engage in dialogue with other fish (must be near + facing fish) <br>
-**SPACEBAR** - Continue through dialogue boxes
+**SPACEBAR** - Continue through dialogue boxes <br>
 **ESC** - Quit the application <br>
 
 ### Game Architecture
